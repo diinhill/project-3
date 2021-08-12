@@ -4,25 +4,26 @@ import InputField from './components/InputField'
 import AuthorPage from './components/AuthorPage'
 import Carousel from 'react-material-ui-carousel'
 import CarouselItem from './components/CarouselItem'
+import ButtonRouter from './components/ButtonRouter'
 
 
 const App = () => {
 
   const [data, setData] = useState()
-  const [name, setName] = useState('')
   const [recentlyPubl, setRecentlyPubl] = useState()
+  const [selectedOptions, setSelectedOptions] = useState('')
 
-  const handleChange = (event) => {
-    setName(event.target.value)
-  }
+  const handleChange = ((event, value) => {
+    setSelectedOptions(value.key)
+  })
+  console.log('selectedOptions:', selectedOptions)
 
-    const results = !name
-      ? data
-      : data && data.docs.filter(person => 
-          person.name.toLowerCase().includes(name.toLocaleLowerCase()))
-    console.log('results:', results)
+  // const handleSubmit = () => {
+  //   console.log(selectedOptions)
+  // }
+
+
   
-
   useEffect(() => {
     const getData = async () => {
       const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=*`)
@@ -54,18 +55,13 @@ const App = () => {
 
     <div style={{ margin: 'auto' }}>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-        <InputField name={name} handleChange={handleChange} />
-      </div>
-
-      <div style={{ display: 'grid', justifyContent: 'center', marginTop: '5px' }}>
-        {
-          results && 
-               results.map(item => {
-                  <p>{item.name}</p>
-                })
+        { data &&
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+            <InputField data={data} handleChange={handleChange} />
+            <ButtonRouter authorKey={selectedOptions} />
+          </div>
         }
-        </div>  
+
 
         <div style={{ justifyContent: 'center', marginTop: '5px' }} >
         <Carousel

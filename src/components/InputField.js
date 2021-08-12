@@ -1,28 +1,28 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import FormControl from '@material-ui/core/FormControl'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
+import TextField from '@material-ui/core/TextField'
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}))
 
-const InputField = (props) => {
-  const classes = useStyles()
+const filterOptions = createFilterOptions({
+  matchFrom: 'start',
+  stringify: (option) => option.name,
+})
 
-  console.log('name:', props.name)
+
+const InputField = ( {data, handleChange} ) => {
+
 
   return (
-    <form className={classes.root} noValidate autoComplete="off">
-      <FormControl variant="outlined">
-        <OutlinedInput id="component-outlined" value={props.name} onChange={props.handleChange} />
-      </FormControl>
-    </form>
+      <Autocomplete
+        id="autocomplete-filter"
+        options={data.docs}
+        getOptionLabel={(option) => option.name}
+        getOptionSelected={(option, value) => option.name === value.name }
+        filterOptions={filterOptions}
+        style={{ width: 300 }}
+        renderInput={(filterOptions) => <TextField {...filterOptions} label="Custom filter" variant="outlined" />}
+        onChange={handleChange}
+      />
   )
 }
-
 export default InputField
