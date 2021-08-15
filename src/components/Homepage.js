@@ -8,6 +8,19 @@ const Homepage = () => {
   const [recentlyPubl, setRecentlyPubl] = useState()
 
   useEffect(() => {
+    // const request = new XMLHttpRequest()
+    //   request.open('GET',`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=science+fiction&mode=everything&sort=new`)
+    //   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+    //   request.onload = function() {
+    //   console.log('request.response:', request.responseText)
+    //   }
+    //   request.send()
+    //   setRecentlyPubl(request.responseText)
+    //   }, [])
+    //   console.log('recentlyPubl:', recentlyPubl)
+
+
+
     const getRecentlyPubl = async () => {
       const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=science+fiction&mode=everything&sort=new`)
       const obj = await response.json()

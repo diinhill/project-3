@@ -21,16 +21,12 @@ const ButtonRouter = ( {authorKey, authorName, authorRef} ) => {
       <RouterLink ref={aRef} to={href} {...props}  />
     ))
 
-    const handleSubmit = () => {
-      console.log('href:', href)
-      console.log('aKey:', aKey)
-     }
 
   return (
     <div>
     <Router>
       <div>
-        <Button color="primary" component={Link} to={href} ref={aRef} handleSubmit={handleSubmit} >
+        <Button color="primary" component={Link} to={href} ref={aRef}>
           see author profile
         </Button>
       </div>
@@ -38,7 +34,7 @@ const ButtonRouter = ( {authorKey, authorName, authorRef} ) => {
       <Switch>
         <div>
         <Route exact path={href}>
-          <AuthorPage authorKey={aKey} authorName={aName} handleSubmit={handleSubmit} />
+          <AuthorPage authorKey={aKey} authorName={aName} />
         </Route>
         </div>
       </Switch>

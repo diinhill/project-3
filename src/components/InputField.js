@@ -21,8 +21,21 @@ const InputField = () => {
 
 
   useEffect(() => {
+    // const request = new XMLHttpRequest()
+    //   request.open('GET',`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=*`)
+    //   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+    //   request.onload = function() {
+    //   console.log('request.response:', request.responseText)
+    //   }
+    //   request.send()
+    //   setData(request.responseText)
+    //   }, [])
+    //   console.log('data:', data)
+
+
+
     const getData = async () => {
-      const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=*`)
+      const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=*&offset=50`)
       const obj = await response.json()
       console.log('obj:', obj)
       console.log('obj.docs:', obj.docs)
