@@ -1,26 +1,50 @@
 import React from 'react'
+import AuthorPage from './AuthorPage'
 import { MemoryRouter as Router } from 'react-router'
 import { Link as RouterLink } from 'react-router-dom'
 import Button from '@material-ui/core/Button'
+import {
+  Switch,
+  Route,
+} from 'react-router-dom'
 
-const LinkBehavior = React.forwardRef((props, ref) => (
-  <RouterLink ref={ref} to="/getting-started/installation/" {...props} />
-))
 
-const ButtonRouter = ( {authorKey} ) => {
-    
+
+const ButtonRouter = ( {authorKey, authorName, authorRef} ) => {
+
+    const href = `/authors/${authorName}`
+    const aRef = authorRef
+    const aKey = authorKey
+    const aName = authorName
+ 
+    const Link = React.forwardRef((props, ref) => (
+      <RouterLink ref={aRef} to={href} {...props}  />
+    ))
+
+    const handleSubmit = () => {
+      console.log('href:', href)
+      console.log('aKey:', aKey)
+     }
+
   return (
+    <div>
     <Router>
       <div>
-        {/* <Button color="primary" component={RouterLink} to="/">
-          With prop forwarding
-        </Button>
-        <br /> */}
-        <Button color="primary" component={LinkBehavior}>
-          see author page
+        <Button color="primary" component={Link} to={href} ref={aRef} handleSubmit={handleSubmit} >
+          see author profile
         </Button>
       </div>
+
+      <Switch>
+        <div>
+        <Route exact path={href}>
+          <AuthorPage authorKey={aKey} authorName={aName} handleSubmit={handleSubmit} />
+        </Route>
+        </div>
+      </Switch>
+
     </Router>
-  );
+    </div>
+  )
 }
 export default ButtonRouter

@@ -1,4 +1,9 @@
+import './App.css'
 import InputField from './components/InputField'
+import Homepage from './components/Homepage'
+// import ButtonRouter from './components/ButtonRouter'
+// import { Link as RouterLink } from 'react-router-dom'
+// import AuthorPage from './components/AuthorPage'
 import React from 'react'
 import {
   BrowserRouter as Router,
@@ -6,11 +11,11 @@ import {
   Route,
   Link
 } from 'react-router-dom'
-import AuthorPage from './components/AuthorPage'
 
 
 
-function App() {
+
+const App = () => {
 
   return (
     <div className="App">
@@ -30,14 +35,14 @@ function App() {
 
         <Switch>
           <Route exact path="/">
-            <h1>React Router</h1>
+            <Homepage />
           </Route>
           <Route exact path="/authors">
             <InputField />
           </Route>
-          <Route exact path="/authors/:name">
+          {/* <ButtonRouter exact path={`/authors/${authorName}`}>
             <AuthorPage />
-          </Route>
+          </ButtonRouter> */}
         </Switch>
         {/* 6 add a url link when clicking on a character and define a route handling the name as URL parameter */}
 

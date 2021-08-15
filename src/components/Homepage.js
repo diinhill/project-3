@@ -1,44 +1,11 @@
-import '.../App.css'
 import React, { useState, useEffect } from 'react'
-import InputField from './InputField'
-import AuthorPage from './AuthorPage'
 import Carousel from 'react-material-ui-carousel'
-import CarouselItem from '.CarouselItem'
-import ButtonRouter from './ButtonRouter'
+import CarouselItem from './CarouselItem'
 
 
-const App = () => {
+const Homepage = () => {
 
-  const [data, setData] = useState()
   const [recentlyPubl, setRecentlyPubl] = useState()
-  const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
-  const [selectedAuthorName, setSelectedAuthorName] = useState('')
-
-  const handleChange = ((event, value) => {
-    setSelectedAuthorKey(value.key)
-    setSelectedAuthorName(value.name)
-  })
-  console.log('selectedAuthorKey:', selectedAuthorKey)
-  console.log('selectedAuthorName:', selectedAuthorName)
-
-  // const handleSubmit = () => {
-  //   console.log(selectedOptions)
-  // }
-
-
-  
-  useEffect(() => {
-    const getData = async () => {
-      const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=*`)
-      const obj = await response.json()
-      console.log('obj:', obj)
-      console.log('obj.docs:', obj.docs)
-      setData(obj)
-    }
-    getData()
-    }, [])
-  console.log('data:', data)
-
 
   useEffect(() => {
     const getRecentlyPubl = async () => {
@@ -53,18 +20,9 @@ const App = () => {
 
 
 
-
   return (
 
     <div style={{ margin: 'auto' }}>
-
-        { data &&
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
-            <InputField data={data} handleChange={handleChange} />
-            <ButtonRouter authorKey={selectedAuthorKey} authorName={selectedAuthorName} />
-          </div>
-        }
-
 
         <div style={{ justifyContent: 'center', marginTop: '5px' }} >
         <Carousel
@@ -79,7 +37,7 @@ const App = () => {
                 /* if ('item.cover_i' in item[i]) { */
                   return (
                     <div style={{ margin: '5px' }}>
-                          <CarouselItem item={item} />
+                          <CarouselItem item={item} key={i} />
                          
                     </div>
                   )
@@ -93,4 +51,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Homepage
