@@ -28,7 +28,7 @@ const Homepage = () => {
       setRecentlyPubl(obj.docs)
     }
     getRecentlyPubl()
-    }, [])
+  }, [])
   console.log('recentlyPubl:', recentlyPubl)
 
 
@@ -37,27 +37,27 @@ const Homepage = () => {
 
     <div style={{ margin: 'auto' }}>
 
-        <div style={{ justifyContent: 'center', marginTop: '5px' }} >
+      <div style={{ justifyContent: 'center', marginTop: '5px' }} >
         <Carousel
-            next={ (next, active) => console.log(`we left ${active}, and are now at ${next}`) }
-            prev={ (prev, active) => console.log(`we left ${active}, and are now at ${prev}`) }
+          next={(next, active) => console.log(`we left ${active}, and are now at ${next}`)}
+          prev={(prev, active) => console.log(`we left ${active}, and are now at ${prev}`)}
         >
-        {
-          recentlyPubl && 
-              recentlyPubl.map((item, i) => {
-                /* console.log('item.cover_i:', item.cover_i) */
-                /* console.log('item.title:', item.title) */
-                /* if ('item.cover_i' in item[i]) { */
-                  return (
-                    <div style={{ margin: '5px' }}>
-                          <CarouselItem item={item} key={i} />
-                         
-                    </div>
-                  )
-              })
-        }
+          {
+            recentlyPubl &&
+            recentlyPubl.map((item, i) => {
+              /* console.log('item.cover_i:', item.cover_i) */
+              /* console.log('item.title:', item.title) */
+              /* if ('item.cover_i' in item[i]) { */
+              return (
+                <div style={{ margin: '5px' }}>
+                  <CarouselItem item={item} key={i} />
+
+                </div>
+              )
+            })
+          }
         </Carousel>
-        </div>
+      </div>
 
     </div>
 
