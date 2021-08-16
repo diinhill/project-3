@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import AuthorCard from './AuthorCard'
+import { useParams } from 'react-router-dom'
 
-const AuthorPage = ( {authorKey, authorName} ) => {
+const AuthorPage = () => {
 
-    console.log('author:', authorName)
+    const { authorKey } = useParams()
+
     console.log('authorKey:', authorKey)
 
     const [authorInfo, setAuthorInfo] = useState()
-  
-    useEffect(() => {
-        // const request = new XMLHttpRequest()
-        //     request.open("GET",`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/authors/${authorKey}.json`)
-        //     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-        //     request.onload = function() {
-        //         console.log('request.response:', request.responseText)
-        //     }
-        //     request.send()
-        //     setAuthorInfo(request.responseText)
-        // }, [authorKey])
-        // console.log('authorInfo:', authorInfo)
 
+    useEffect(() => {
         const getAuthorInfo = async () => {
             const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/authors/${authorKey}.json`)
             const obj = await response.json()
@@ -27,14 +18,14 @@ const AuthorPage = ( {authorKey, authorName} ) => {
             setAuthorInfo(obj)
         }
         getAuthorInfo()
-        }, [authorKey])
+    }, [authorKey])
     console.log('authorInfo:', authorInfo)
 
     return (
 
         <div style={{ margin: 'auto' }}>
             {authorInfo &&
-            <AuthorCard authorInfo={authorInfo} />
+                <AuthorCard authorInfo={authorInfo} />
             }
         </div>
     )
