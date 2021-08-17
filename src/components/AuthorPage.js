@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 const AuthorPage = () => {
 
     const { authorKey } = useParams()
-
     console.log('authorKey:', authorKey)
 
     const [authorInfo, setAuthorInfo] = useState()
@@ -20,6 +19,7 @@ const AuthorPage = () => {
         getAuthorInfo()
     }, [authorKey])
     console.log('authorInfo:', authorInfo)
+
 
     return (
 
