@@ -11,12 +11,9 @@ const AuthorSearch = () => {
 
   const [options, setOptions] = useState([])
   const [inputValue, setInputValue] = useState('')
-  const [selectedAuthorKey, setSelectedAuthorKey] = useState()
+  const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
   const [selectedAuthorName, setSelectedAuthorName] = useState('')
 
-  // console.log('options:', options)
-  // console.log('selectedAuthorName:', selectedAuthorName)
-  // console.log('selectedAuthorKey:', selectedAuthorKey)
 
   const getOptionsAsync = async (text) => {
     const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=${text}`)
@@ -27,23 +24,17 @@ const AuthorSearch = () => {
   }
 
   const getOptionsDelayed = useCallback(debounce((text, callback) => {
-    // setOptions([])
     getOptionsAsync(text)
   }, 500)
     , [])
 
   useEffect(() => {
-    // getOptionsDelayed(inputValue, (filteredOptions) => {
-    //   setOptions(filteredOptions);
-    // getOptionsAsync()
     inputValue && !selectedAuthorKey && getOptionsDelayed(inputValue)
   }, [inputValue])
 
   const handleChange = ((event, value) => {
     setSelectedAuthorKey(value.key)
     setSelectedAuthorName(value.name)
-    // console.log('selectedAuthorKey:', selectedAuthorKey)
-    // console.log('selectedAuthorName:', selectedAuthorName)
   })
 
   useEffect(() => {

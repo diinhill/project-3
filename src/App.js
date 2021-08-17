@@ -1,10 +1,9 @@
 import './App.css'
-// import InputField from './components/InputField'
-import AuthorSearch from './components/AuthorSearch'
 import Homepage from './components/Homepage'
-// import ButtonRouter from './components/ButtonRouter'
-// import { Link as RouterLink } from 'react-router-dom'
+import AuthorSearch from './components/AuthorSearch'
 import AuthorPage from './components/AuthorPage'
+import BookSearch from './components/BookSearch'
+import BookPage from './components/BookPage'
 import React from 'react'
 import {
   BrowserRouter as Router,
@@ -30,7 +29,9 @@ const App = () => {
             <li>
               <Link to="/authors">Authors</Link>
             </li>
-
+            <li>
+              <Link to="/books">Works</Link>
+            </li>
           </ul>
         </nav>
 
@@ -39,15 +40,18 @@ const App = () => {
             <Homepage />
           </Route>
           <Route exact path="/authors">
-            {/* <InputField /> */}
             <AuthorSearch />
           </Route>
           <Route exact path={`/authors/:authorKey`}>
             <AuthorPage />
           </Route>
+          <Route exact path="/books">
+            <BookSearch />
+          </Route>
+          <Route exact path={`/:bookKey`}>
+            <BookPage />
+          </Route>
         </Switch>
-        {/* 6 add a url link when clicking on a character and define a route handling the name as URL parameter */}
-
 
       </Router>
     </div>

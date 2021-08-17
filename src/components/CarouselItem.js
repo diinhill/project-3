@@ -7,7 +7,7 @@ const CarouselItem = ({ item }) => {
 
     return (
         <Paper>
-            <img src={`http://covers.openlibrary.org/b/isbn/${item?.isbn[0]}-M.jpg`} alt={'cover'} />
+            <img src={`http://covers.openlibrary.org/b/id/${item?.cover_i}-M.jpg`} alt={'book cover'} />
             <h2>{item.title}</h2>
             <p>{item.first_publish_year}</p>
             <p>{item.author_name}</p>
