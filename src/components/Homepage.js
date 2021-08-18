@@ -8,35 +8,31 @@ const Homepage = () => {
   const [recentlyPubl, setRecentlyPubl] = useState()
 
   useEffect(() => {
-    // const request = new XMLHttpRequest()
-    //   request.open('GET',`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=science+fiction&mode=everything&sort=new`)
-    //   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-    //   request.onload = function() {
-    //   console.log('request.response:', request.responseText)
-    //   }
-    //   request.send()
-    //   setRecentlyPubl(request.responseText)
-    //   }, [])
-    //   console.log('recentlyPubl:', recentlyPubl)
+
 
     const getRecentlyPubl = async () => {
       const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=science+fiction&mode=everything&sort=new`)
       const obj = await response.json()
       console.log('objRecPubl:', obj.docs)
 
-      const hasCover = []
-      obj.docs && obj.docs.map((item, i) => (
-        item?.cover_i &&
-        hasCover.push(item)
-      ))
-      setRecentlyPubl(hasCover)
-    }
+  
+    
+  
 
+      obj.docs && 
+      setRecentlyPubl( obj.docs.filter(item  =>  {
+        // let img = new Image()
+        // img.src= await `https://covers.openlibrary.org/b/id/${item?.cover_i}-M.jpg`
+        return item?.cover_i && (item?.cover_i !== 11096487)  
+        // &&  (img.width!==0)
+    }))
+
+    }
+    
     getRecentlyPubl()
   }, [])
-  console.log('recentlyPubl:', recentlyPubl)
 
-
+console.log('recentlyPubl:', recentlyPubl)
 
   return (
 
@@ -50,9 +46,9 @@ const Homepage = () => {
           {
             recentlyPubl &&
             recentlyPubl.map((item, i) =>
-              <div style={{ margin: '5px' }}>
+              // <div style={{ margin: '5px' }}>
                 <CarouselItem item={item} key={i} />
-              </div>
+              // </div>
             )
           }
         </Carousel>

@@ -38,7 +38,7 @@ const BookSearch = () => {
     })
 
     useEffect(() => {
-        selectedBookKey && history.push(`/${selectedBookKey}`)
+        selectedBookKey && history.push(`${selectedBookKey}`)
         console.log('selectedBookKey:', selectedBookKey)
         console.log('selectedTitle:', selectedTitle)
     }, [selectedBookKey])
@@ -48,7 +48,7 @@ const BookSearch = () => {
     return (
         <Autocomplete
             options={options}
-            getOptionLabel={(option) => option.title}
+            getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
             getOptionSelected={(option, value) => option.title === value.title}
             filterOptions={(x) => x} // disable filtering on client
             loading={options.length === 0}

@@ -30,7 +30,7 @@ const App = () => {
               <Link to="/authors">Authors</Link>
             </li>
             <li>
-              <Link to="/books">Works</Link>
+              <Link to="/works">Books</Link>
             </li>
           </ul>
         </nav>
@@ -45,10 +45,10 @@ const App = () => {
           <Route exact path={`/authors/:authorKey`}>
             <AuthorPage />
           </Route>
-          <Route exact path="/books">
+          <Route exact path="/works">
             <BookSearch />
           </Route>
-          <Route exact path={`/:bookKey`}>
+          <Route exact path={`/works/:bookKey`}>
             <BookPage />
           </Route>
         </Switch>

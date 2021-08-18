@@ -43,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
 
 const AuthorCard = ({ authorInfo }) => {
 
+  console.log('authorInfo:', authorInfo)
+
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState(false)
 
@@ -51,29 +53,32 @@ const AuthorCard = ({ authorInfo }) => {
   }
 
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="author" className={classes.avatar}>
-            A
-          </Avatar>
+      <Card className={classes.root}>
+        <CardHeader
+          // avatar={
+          //   <Avatar aria-label="author" className={classes.avatar}>
+          //     A
+          //   </Avatar>
+          // }
+          // action={
+          //   <IconButton aria-label="settings">
+          //     <MoreVertIcon />
+          //   </IconButton>
+          // }
+          title={authorInfo.name}
+          subheader={`${authorInfo?.birth_date} - ${authorInfo?.death_date}`}
+        />
+        {authorInfo?.photos && 
+        <CardMedia className={classes.media} title="portrait author">
+        <img src={`https://covers.openlibrary.org/a/id/${authorInfo?.photos[0]}-M.jpg`} alt="portrait author" />
+        </CardMedia>
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={authorInfo.name}
-        subheader={`${authorInfo.birth_date} - ${authorInfo?.death_date}`}
-      />
-      <CardMedia className={classes.media} title="portrait author">
-        <img src={`http://covers.openlibrary.org/a/id/${authorInfo?.photos[0]}-M.jpg`} alt={'portrait author'} />
-      </CardMedia>
-      {/* <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {authorInfo?.bio?.value || "no text"}
-        </Typography>
-      </CardContent> */}
+        {/* <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {authorInfo?.bio?.value || "no text"}
+          </Typography>
+        </CardContent> */}
+
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
