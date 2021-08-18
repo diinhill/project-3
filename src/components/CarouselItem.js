@@ -1,5 +1,6 @@
 import React from 'react'
 import { Paper, Button } from '@material-ui/core'
+import BookPage from './BookPage'
 
 const CarouselItem = ({ item }) => {
 
@@ -14,6 +15,7 @@ const CarouselItem = ({ item }) => {
 
             <Button className='CheckButton'>
                 see full description
+                <BookPage bookKey={item.key} />
             </Button>
         </Paper>
     )
