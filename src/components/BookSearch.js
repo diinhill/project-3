@@ -11,8 +11,9 @@ const BookSearch = () => {
 
     const [options, setOptions] = useState([])
     const [inputValue, setInputValue] = useState('')
-    const [selectedBookKey, setSelectedBookKey] = useState('')
     const [selectedTitle, setSelectedTitle] = useState('')
+    const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
+    const [selectedEdition, setSelectedEdition] = useState('')
 
 
     const getOptionsAsync = async (text) => {
@@ -21,7 +22,7 @@ const BookSearch = () => {
         console.log('obj:', obj)
         console.log('obj.docs:', obj.docs)
         setOptions(obj.docs)
-    }
+        }
 
     const getOptionsDelayed = useCallback(debounce((text, callback) => {
         getOptionsAsync(text)
@@ -29,35 +30,36 @@ const BookSearch = () => {
         , [])
 
     useEffect(() => {
-        inputValue && !selectedBookKey && getOptionsDelayed(inputValue)
+        inputValue && !selectedTitle && getOptionsDelayed(inputValue)
     }, [inputValue])
 
     const handleChange = ((event, value) => {
-        setSelectedBookKey(value.key)
         setSelectedTitle(value.title)
+        setSelectedAuthorKey(value.author_key[0])
+        setSelectedEdition(value.cover_edition_key)
     })
 
     useEffect(() => {
-        selectedBookKey && history.push(`${selectedBookKey}`)
-        console.log('selectedBookKey:', selectedBookKey)
+        selectedTitle && history.push(`/books/${selectedEdition}`)
         console.log('selectedTitle:', selectedTitle)
-    }, [selectedBookKey])
+        console.log('selectedAuthorKey:', selectedAuthorKey)
+        console.log('selectedEdition:', selectedEdition)
+    }, [selectedTitle])
 
 
-
-    return (
-        <Autocomplete
-            options={options}
-            getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
-            getOptionSelected={(option, value) => option.title === value.title}
-            filterOptions={(x) => x} // disable filtering on client
-            loading={options.length === 0}
-            onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
-            renderInput={(params) =>
-                <TextField {...params} label='Search for Title' variant='outlined' />
-            }
-            onChange={handleChange}
-        />
+    return (  
+            <Autocomplete
+                options={options}
+                getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
+                getOptionSelected={(option, value) => option.title === value.title}
+                filterOptions={(x) => x} // disable filtering on client
+                loading={options.length === 0}
+                onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
+                renderInput={(params) =>
+                    <TextField {...params} label='Search for Title' variant='outlined' />
+                }
+                onChange={handleChange}
+            />
     )
 }
 export default BookSearch

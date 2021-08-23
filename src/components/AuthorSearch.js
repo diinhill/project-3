@@ -29,11 +29,11 @@ const AuthorSearch = () => {
     , [])
 
   useEffect(() => {
-    inputValue && !selectedAuthorKey && getOptionsDelayed(inputValue)
+    inputValue && !selectedAuthorName && getOptionsDelayed(inputValue)
   }, [inputValue])
 
   const handleChange = ((event, value) => {
-    setSelectedAuthorKey(value.key)
+    setSelectedAuthorKey(options[0].key)
     setSelectedAuthorName(value.name)
   })
 

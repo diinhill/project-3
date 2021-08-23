@@ -11,15 +11,18 @@ import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { red } from '@material-ui/core/colors'
-import FavoriteIcon from '@material-ui/icons/Favorite'
+import AddIcon from '@material-ui/icons/Add'
+import RemoveIcon from '@material-ui/icons/Remove'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import { Link } from 'react-router-dom'
 // import { checkPropTypes } from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 345,
+        // maxWidth: 345,
     },
     // media: {
     //   height: 0,
@@ -41,10 +44,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const BookCard = ({ bookInfo }) => {
+const BookCard = ({ bookInfo, workInfo }) => {
 
     console.log('bookInfo:', bookInfo)
-    console.log('bookInfo.title:', bookInfo.title)
+    console.log('workInfo:', workInfo)
 
     const classes = useStyles()
     const [expanded, setExpanded] = React.useState(false)
@@ -58,35 +61,52 @@ const BookCard = ({ bookInfo }) => {
             <CardHeader
                 avatar={
                     <Avatar aria-label="book" className={classes.avatar}>
-                        B
+                        {workInfo?.subjects || bookInfo?.subject}
                     </Avatar>
                 }
                 action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon />
+                    <IconButton aria-label="go to ia-page">
+                        <Link to={`https://openlibrary.org/${workInfo.key}`}>
+                            <OpenInNewIcon />
+                        </Link>
                     </IconButton>
                 }
-                title={bookInfo.title}
-                subheader={`${bookInfo?.copyright_date}`}
+                title={workInfo.title}
+                subheader={`${bookInfo?.first_publish_year}` }
             />
             <CardMedia className={classes.media} title="book cover">
-                <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.covers}-M.jpg`} alt={'book cover'} />
+                <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.cover_i}-L.jpg`} alt={'book cover'} />
             </CardMedia>
             {/* <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {authorInfo?.bio?.value || "no text"}
         </Typography>
       </CardContent> */}
+
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton aria-label="add to favorites" 
+                            // value="check"
+                            // selected={selected}
+                            // onChange={() => {
+                            // setSelected(!selected)
+                            // }}
+                >
+                    <AddIcon /> || <RemoveIcon />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
+                <IconButton aria-label="show author details">
+                    {bookInfo?.author_key && 
+                        <Link to={`/authors/${bookInfo?.author_key[0]}`}>
+                            <ShareIcon />
+                        </Link>
+                    }
+                </IconButton>
+
 
                 <div>
-                    {bookInfo?.description &&
+                    {workInfo?.description &&
                         <IconButton
                             className={clsx(classes.expand, {
                                 [classes.expandOpen]: expanded,
@@ -101,30 +121,13 @@ const BookCard = ({ bookInfo }) => {
                 </div>
 
             </CardActions>
+
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     {/* <Typography paragraph>Method:</Typography> */}
                     <Typography paragraph>
-                        {bookInfo?.description || "no text"}
+                        {workInfo?.description?.value || workInfo?.description}
                     </Typography>
-                    {/* <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography> */}
                 </CardContent>
             </Collapse>
         </Card>

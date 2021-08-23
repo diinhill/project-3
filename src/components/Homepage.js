@@ -5,34 +5,36 @@ import CarouselItem from './CarouselItem'
 
 const Homepage = () => {
 
-  const [recentlyPubl, setRecentlyPubl] = useState()
+  const [newScifi, setNewScifi] = useState()
+  const [newHorror, setNewHorror] = useState()
 
   useEffect(() => {
 
-
-    const getRecentlyPubl = async () => {
+    const getNewScifi = async () => {
       const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=science+fiction&mode=everything&sort=new`)
       const obj = await response.json()
-      console.log('objRecPubl:', obj.docs)
-
-  
-    
-  
-
-      obj.docs && 
-      setRecentlyPubl( obj.docs.filter(item  =>  {
-        // let img = new Image()
-        // img.src= await `https://covers.openlibrary.org/b/id/${item?.cover_i}-M.jpg`
+      console.log('newScifi:', obj.docs)
+      setNewScifi( obj?.docs.filter(item  =>  {
         return item?.cover_i && (item?.cover_i !== 11096487)  
-        // &&  (img.width!==0)
-    }))
-
+      }))
     }
-    
-    getRecentlyPubl()
+
+    const getNewHorror = async () => {
+      const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/search.json?q=horror&mode=everything&sort=new`)
+      const obj = await response.json()
+      console.log('newHorror:', obj.docs)
+      setNewHorror( obj?.docs.filter(item  =>  {
+        return item?.cover_i && (item?.cover_i !== 11096487)  
+      }))
+    }
+
+    getNewScifi()
+    getNewHorror()
   }, [])
 
-console.log('recentlyPubl:', recentlyPubl)
+ console.log('newScifi:', newScifi)
+ console.log('newHorror:', newHorror)
+
 
   return (
 
@@ -44,11 +46,15 @@ console.log('recentlyPubl:', recentlyPubl)
         // prev={(prev, active) => console.log(`we left ${active}, and are now at ${prev}`)}
         >
           {
-            recentlyPubl &&
-            recentlyPubl.map((item, i) =>
-              // <div style={{ margin: '5px' }}>
-                <CarouselItem item={item} key={i} />
-              // </div>
+            newScifi?.map((item,ii) =>
+                <CarouselItem item={item} key={ii} />
+            )
+          }
+        </Carousel>
+        <Carousel>
+          {
+            newHorror?.map((item,ii) =>
+                <CarouselItem item={item} key={ii} />
             )
           }
         </Carousel>
@@ -57,6 +63,6 @@ console.log('recentlyPubl:', recentlyPubl)
     </div>
 
   )
-}
 
+}
 export default Homepage
