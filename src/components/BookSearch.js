@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useContext } from 'react'
+import { BookContext } from '../context/bookContext'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import TextField from '@material-ui/core/TextField'
 import debounce from 'lodash/debounce'
@@ -9,23 +10,23 @@ const BookSearch = () => {
 
     const history = useHistory()
 
-    const [options, setOptions] = useState([])
+    let { booksByTitle, getBooksByTitle } = useContext(BookContext)
     const [inputValue, setInputValue] = useState('')
     const [selectedTitle, setSelectedTitle] = useState('')
     const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
     const [selectedEdition, setSelectedEdition] = useState('')
 
 
-    const getOptionsAsync = async (text) => {
-        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${text}`)
-        const obj = await response.json()
-        console.log('obj:', obj)
-        console.log('obj.docs:', obj.docs)
-        setOptions(obj.docs)
-        }
+    // const getOptionsAsync = async (text) => {
+    //     const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${text}`)
+    //     const obj = await response.json()
+    //     console.log('obj:', obj)
+    //     console.log('obj.docs:', obj.docs)
+    //     setOptions(obj.docs)
+    // }
 
     const getOptionsDelayed = useCallback(debounce((text, callback) => {
-        getOptionsAsync(text)
+        getBooksByTitle(text)
     }, 500)
         , [])
 
@@ -40,7 +41,7 @@ const BookSearch = () => {
     })
 
     useEffect(() => {
-        selectedTitle && history.push(`/books/${selectedEdition}`)
+        selectedTitle && history.push(`/authors/${selectedAuthorKey}/books/${selectedEdition}`)
         console.log('selectedTitle:', selectedTitle)
         console.log('selectedAuthorKey:', selectedAuthorKey)
         console.log('selectedEdition:', selectedEdition)
@@ -49,11 +50,11 @@ const BookSearch = () => {
 
     return (  
             <Autocomplete
-                options={options}
+                options={booksByTitle}
                 getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
                 getOptionSelected={(option, value) => option.title === value.title}
                 filterOptions={(x) => x} // disable filtering on client
-                loading={options.length === 0}
+                loading={booksByTitle.length === 0}
                 onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
                 renderInput={(params) =>
                     <TextField {...params} label='Search for Title' variant='outlined' />

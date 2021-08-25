@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { BookContext } from '../context/bookContext'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
@@ -15,10 +16,12 @@ import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+// import MoreVertIcon from '@material-ui/icons/MoreVert'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 // import { checkPropTypes } from 'prop-types';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,13 +47,17 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const BookCard = ({ bookInfo, workInfo }) => {
+const BookCard = () => {
 
-    console.log('bookInfo:', bookInfo)
-    console.log('workInfo:', workInfo)
+    let { authorKey, bookKey } = useParams()
+    let { bookInfo, getBookInfo, workInfo } = useContext(BookContext)
+
+    useEffect(() => {
+        getBookInfo(bookKey)
+    }, [bookKey])
 
     const classes = useStyles()
-    const [expanded, setExpanded] = React.useState(false)
+    const [expanded, setExpanded] = useState(false)
 
     const handleExpandClick = () => {
         setExpanded(!expanded)
@@ -64,18 +71,18 @@ const BookCard = ({ bookInfo, workInfo }) => {
                         {workInfo?.subjects || bookInfo?.subject}
                     </Avatar>
                 }
-                action={
-                    <IconButton aria-label="go to ia-page">
-                        <Link to={`https://openlibrary.org/${workInfo.key}`}>
-                            <OpenInNewIcon />
-                        </Link>
-                    </IconButton>
-                }
-                title={workInfo.title}
+                // action={
+                //     <IconButton aria-label="go to ia-page">
+                //         <Link href={`https://openlibrary.org/${workInfo?.key}`}>
+                //             <OpenInNewIcon />
+                //         </Link>
+                //     </IconButton>
+                // }
+                title={workInfo?.title}
                 subheader={`${bookInfo?.first_publish_year}` }
             />
             <CardMedia className={classes.media} title="book cover">
-                <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.cover_i}-L.jpg`} alt={'book cover'} />
+                <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.cover_i}-L.jpg`} alt='' />
             </CardMedia>
             {/* <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -97,11 +104,9 @@ const BookCard = ({ bookInfo, workInfo }) => {
                     <ShareIcon />
                 </IconButton>
                 <IconButton aria-label="show author details">
-                    {bookInfo?.author_key && 
-                        <Link to={`/authors/${bookInfo?.author_key[0]}`}>
+                        <Link to={`/authors/${authorKey}`}>
                             <ShareIcon />
                         </Link>
-                    }
                 </IconButton>
 
 

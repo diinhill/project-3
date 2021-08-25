@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import React, { useContext } from 'react'
 import { AuthContext } from '../context/authContext'
+// import { BookContext } from '../context/bookContext'
+// import { NewBooksContext } from '../context/newBooksContext'
 // import { ThemeContext } from '../context/themeContext'
 
 function Nav () {
     
     const { user } = useContext(AuthContext)
+
     // const { activeTheme, toggleTheme } = useContext(ThemeContext)
 
     console.log('user:', user)

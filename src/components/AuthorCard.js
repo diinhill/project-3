@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { BookContext } from '../context/bookContext'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
@@ -15,6 +16,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 // import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 // import { checkPropTypes } from 'prop-types';
@@ -45,13 +47,21 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const AuthorCard = ({ authorInfo, handleClick }) => {
+const AuthorCard = () => {
 
+  let { authorKey } = useParams()
+  let { authorInfoQ, getAuthorInfoQ, authorInfo, getAuthorInfo } = useContext(BookContext)
 
-  const { authorKey } = useParams()
+  useEffect(() => {
+      getAuthorInfoQ(authorKey)
+      getAuthorInfo(authorKey)
+      console.log('authorInfoQ:', authorInfoQ)
+      console.log('authorInfo:', authorInfo)
+  }, [authorKey])
+
 
   const classes = useStyles()
-  const [expanded, setExpanded] = React.useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -72,29 +82,30 @@ const AuthorCard = ({ authorInfo, handleClick }) => {
           //   </IconButton>
           // }
           title={authorInfo?.name}
-          subheader={`${authorInfo?.birth_date} - ${authorInfo?.death_date}`}
+          subheader={((`${authorInfo?.birth_date} - ${authorInfo?.death_date}`) || (`${authorInfoQ?.birth_date} - ${authorInfoQ?.death_date}`)) || "We didn't bother looking up the author's birth date."}
+
         />
         {authorInfo?.photos && 
         <CardMedia className={classes.media} title="portrait author">
-        <img src={`https://covers.openlibrary.org/a/id/${authorInfo?.photos[0]}-M.jpg`} alt="portrait author" />
+          <img src={`https://covers.openlibrary.org/a/id/${authorInfo?.photos[0]}-M.jpg`} alt="Looking at the author's face is not recommended." />
         </CardMedia>
         }
-        {/* <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {authorInfo?.bio?.value || "no text"}
-          </Typography>
-        </CardContent> */}
+        <CardContent>
+          <Paper>
+             <p>{`This author has written ${authorInfoQ?.work_count || "an unknown number of"} book(s) so far.`}</p>
+             <p><i>{authorInfoQ?.top_work}</i>{" is considered to be the author's finest work." || "We have no clue what the author's finest work might be."}</p>
+             <IconButton aria-label="show all books">
+                  <Link to={`/authors/${authorKey}/books/all`}>
+                    <ShareIcon />
+                  </Link>
+             </IconButton>
+          </Paper>
+        </CardContent> 
 
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="show author's books" onClick={handleClick} >
-          <Link to={`/authors/${authorKey}/works`}>
-            <ShareIcon />
-          </Link>
-        </IconButton>
-        
 
         <div>
           {authorInfo?.bio &&
@@ -118,24 +129,6 @@ const AuthorCard = ({ authorInfo, handleClick }) => {
           <Typography paragraph>
             {authorInfo?.bio}
           </Typography>
-          {/* <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography> */}
         </CardContent>
       </Collapse>
     </Card>
