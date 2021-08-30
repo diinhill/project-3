@@ -10,6 +10,10 @@ const AuthorBooksAll = () => {
 
     let { authorInfoQ, authorBooksAll } = useContext(BookContext)
 
+   
+    console.log('authorInfoQ:', authorInfoQ)
+    console.log('authorBooksAll:', authorBooksAll)
+
 
     return (
 
@@ -17,7 +21,7 @@ const AuthorBooksAll = () => {
             <div style={{ margin: 'auto' }}>
                 <h2>{`books by ${authorInfoQ?.name}`}</h2>
                 { authorBooksAll?.map((listitem, i) => 
-                    <ListItem key={i}>
+                    <ListItem key={i} listitem={listitem}>
                         <BookListItem listitem={listitem} /> 
                     </ListItem> )}
             </div>

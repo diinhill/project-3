@@ -5,8 +5,8 @@ import { AuthContext } from '../context/authContext'
 // import { NewBooksContext } from '../context/newBooksContext'
 // import { ThemeContext } from '../context/themeContext'
 
-function Nav () {
-    
+function Nav() {
+
     const { user } = useContext(AuthContext)
 
     // const { activeTheme, toggleTheme } = useContext(ThemeContext)
@@ -35,6 +35,9 @@ function Nav () {
                 </li>
                 <li>
                     <Link to="/register">Register</Link>
+                </li>
+                <li>
+                    <Link to="/lists">My Lists</Link>
                 </li>
             </ul>
         </nav>
