@@ -7,11 +7,13 @@ import AuthorBooksAll from './components/AuthorBooksAll'
 import BookSearch from './components/BookSearch'
 import BookCard from './components/BookCard'
 import UserLists from './components/UserLists'
+import UserList from './components/UserList'
 import React, { useContext } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom'
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
@@ -19,7 +21,6 @@ import { NewBooksContextProvider } from './context/newBooksContext'
 import { BookContextProvider } from './context/bookContext'
 import { AuthContextProvider, AuthContext } from './context/authContext'
 import { UserListsContextProvider } from './context/userListsContext'
-// import { Component } from 'react'
 // import { ThemeProvider } from './context/themeContext'
 
 
@@ -27,11 +28,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   console.log('rest:', rest)
   const { user } = useContext(AuthContext)
   return (
-    <Route {...rest} render={props => (
-      user ?
-        <Component {...props} />
-        : <Redirect to='/login' />
-    )} />
+    <Route {...rest}
+      render={props =>
+        user ?
+          <Component {...props} />
+          : <Redirect to='/login' />
+      } />
   )
 }
 
@@ -43,11 +45,11 @@ function App() {
 
     <div className='App'>
       <AuthContextProvider>
-        <NewBooksContextProvider>
-          <BookContextProvider>
-            <UserListsContextProvider>
-              <Router>
-                <Nav />
+        <Router>
+          <Nav />
+          <NewBooksContextProvider>
+            <BookContextProvider>
+              <UserListsContextProvider>
                 <Switch>
                   <Route exact path='/'>
                     <Homepage />
@@ -74,11 +76,12 @@ function App() {
                     <Login />
                   </Route>
                   <PrivateRoute component={UserLists} exact path='/lists' />
+                  <PrivateRoute component={UserList} exact path={`/lists/:listName`} />
                 </Switch>
-              </Router>
-            </UserListsContextProvider>
-          </BookContextProvider>
-        </NewBooksContextProvider>
+              </UserListsContextProvider>
+            </BookContextProvider>
+          </NewBooksContextProvider>
+        </Router>
       </AuthContextProvider>
     </div>
   )
