@@ -11,33 +11,68 @@ export const UserListsContext = createContext()
 export const UserListsContextProvider = ({ children }) => {
 
     const { user } = useContext(AuthContext)
-    const [newList, setNewList] = useState()
-    const [newFavourite, setNewFavourite] = useState()
+    const [lists, setLists] = useState([])
+    const [booksInList, setBooksInList] = useState()
 
 
 
-    const createNewList = () => {
-        db.collection("users").add({
-            first: "Ada",
-            last: "Lovelace",
-            born: 1815
+    const createNewList = (listName) => {
+        db.collection(`user/${user.uid}/userlists`).doc(listName).set({
+            userListName: listName,
+            createdBy: user.displayName,
+            numberOfBooks: '',
+            createdOnDate: new Date()
         })
-            .then((docRef) => {
-                console.log("Document written with ID: ", docRef.id)
+            .then(() => {
+                console.log("Document successfully written.")
+                getLists()
             })
             .catch((error) => {
                 console.error("Error adding document: ", error)
             })
     }
-    const getNewList = () => {
-        db.collection("users").get().then((querySnapshot) => {
+    const getLists = () => {
+        db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
+            const allLists = []
             querySnapshot.forEach((doc) => {
-                console.log(`${doc.id} => ${doc.data()}`)
+                // doc.data() is never undefined for query doc snapshots
+                allLists.push(doc.data())
             })
+            console.log('allLists:', allLists)
+            setLists(allLists)
         })
     }
 
-    const addFavouriteToList = () => {
+
+    const addBookToList = (listName, bookObject) => {
+        db.collection(`user/${user.uid}/userlists/${listName}`).doc(bookObject).set({
+            // userListName: listName,
+            // createdBy: user.displayName,
+            // numberOfBooks: '',
+            // createdOnDate: new Date()
+        })
+            .then(() => {
+                console.log("Document successfully written.")
+                getBooksInList()
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error)
+            })
+    }
+    const getBooksInList = (listName) => {
+        db.collection(`user/${user.uid}/userlists/${listName}`).get().then((querySnapshot) => {
+            const allBooksInList = []
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                allBooksInList.push(doc.data())
+            })
+            console.log('allBooksInList:', allBooksInList)
+            setBooksInList(allBooksInList)
+        })
+    }
+
+
+    const removeBookFromList = () => {
 
     }
 
@@ -49,7 +84,7 @@ export const UserListsContextProvider = ({ children }) => {
 
 
     return (
-        <UserListsContext.Provider value={{ newList, createNewList, getNewList, newFavourite, addFavouriteToList }}>
+        <UserListsContext.Provider value={{ lists, createNewList, getLists, addBookToList, booksInList, removeBookFromList }}>
             {children}
         </UserListsContext.Provider>
     )

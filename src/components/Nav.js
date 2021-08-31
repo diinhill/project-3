@@ -5,6 +5,8 @@ import { AuthContext } from '../context/authContext'
 // import { NewBooksContext } from '../context/newBooksContext'
 // import { ThemeContext } from '../context/themeContext'
 
+const flexContainer = { display: 'flex' }
+
 function Nav() {
 
     const { user } = useContext(AuthContext)
@@ -17,7 +19,7 @@ function Nav() {
     // }
     return (
 
-        <nav>
+        <nav style={flexContainer}>
             {/* <button onClick={handleClick}>toggle</button> */}
             <p>{user ? user.email : "Not logged in"}</p>
             <ul>

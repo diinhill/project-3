@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { BookContext } from '../context/bookContext'
+import { UserListsContext } from '../context/userListsContext'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
@@ -51,17 +52,28 @@ const BookCard = () => {
 
     let { authorKey, bookKey } = useParams()
     let { bookInfo, getBookInfo, workInfo } = useContext(BookContext)
+    const { addBookToList, removeBookFromList } = useContext(UserListsContext)
+
+    const classes = useStyles()
+    const [expanded, setExpanded] = useState(false)
+    const [selected, setSelected] = useState(false)
+
+
 
     useEffect(() => {
         getBookInfo(bookKey)
     }, [bookKey])
 
-    const classes = useStyles()
-    const [expanded, setExpanded] = useState(false)
-
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
+
+    const handleSelected = () => {
+        !selected ? addBookToList(bookInfo, workInfo) && setSelected(true)
+            : removeBookFromList(bookInfo, workInfo) && setSelected(false)
+    }
+
+
 
     return (
         <Card className={classes.root}>
@@ -79,7 +91,7 @@ const BookCard = () => {
                 //     </IconButton>
                 // }
                 title={workInfo?.title}
-                subheader={`${bookInfo?.first_publish_year}` }
+                subheader={`${bookInfo?.first_publish_year}`}
             />
             <CardMedia className={classes.media} title="book cover">
                 <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.cover_i}-L.jpg`} alt='' />
@@ -91,22 +103,24 @@ const BookCard = () => {
       </CardContent> */}
 
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites" 
-                            // value="check"
-                            // selected={selected}
-                            // onChange={() => {
-                            // setSelected(!selected)
-                            // }}
+                <IconButton aria-label="add to favourites"
+                    value="check"
+                    // selected={selected}
+                    // onChange={() => {
+                    // setSelected(!selected)
+                    // }}
+                    onChange={handleSelected}
                 >
-                    <AddIcon /> || <RemoveIcon />
+                    <AddIcon />
+                    {/* || <RemoveIcon /> */}
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
                 <IconButton aria-label="show author details">
-                        <Link to={`/authors/${authorKey}`}>
-                            <ShareIcon />
-                        </Link>
+                    <Link to={`/authors/${authorKey}`}>
+                        <ShareIcon />
+                    </Link>
                 </IconButton>
 
 
