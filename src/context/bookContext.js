@@ -8,10 +8,12 @@ export const BookContextProvider = ({ children }) => {
 
     const [authorInfoQ, setAuthorInfoQ] = useState()
     const [authorInfo, setAuthorInfo] = useState()
+    const [mergedAuthorInfo, setMergedAuthorInfo] = useState()
     const [authorBooksAll, setAuthorBooksAll] = useState()
     const [booksByTitle, setBooksByTitle] = useState()
     const [bookInfo, setBookInfo] = useState()
     const [workInfo, setWorkInfo] = useState()
+    const [mergedBookInfo, setMergedBookInfo] = useState()
 
 
     const getAuthorInfoQ = async (authorKey) => {
@@ -77,14 +79,14 @@ export const BookContextProvider = ({ children }) => {
     //     }))
     // }
 
-    const getBookInfo = async (bookKey) => {
-        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?q=${bookKey}`)
+    const getBookInfo = async (key) => {
+        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?q=${key}`)
         const book = await response.json()
         console.log('bookInfo:', book.docs)
         console.log('bookInfo[0]:', book?.docs[0])
         console.log('bookInfo[0].author_key:', book.docs[0].author_key[0])
         setBookInfo(book?.docs[0])
-        getWorkInfo(book?.docs[0].key)
+        await getWorkInfo(book?.docs[0].key)
     }
     const getWorkInfo = async (key) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/${key}.json`)
@@ -93,11 +95,18 @@ export const BookContextProvider = ({ children }) => {
         setWorkInfo(work)
     }
 
+    const getMergedBookInfo = async (bookKey) => {
+        await getBookInfo(bookKey)
+        const merged = { ...bookInfo, ...workInfo }
+        setMergedBookInfo(merged)
+        console.log('mergedBookInfo:', mergedBookInfo)
+    }
+
 
     return (
 
         <BookContext.Provider
-            value={{ authorInfoQ, getAuthorInfoQ, authorInfo, getAuthorInfo, authorBooksAll, getAuthorBooksAll, booksByTitle, getBooksByTitle, bookInfo, getBookInfo, workInfo, getWorkInfo }}
+            value={{ authorInfoQ, getAuthorInfoQ, authorInfo, getAuthorInfo, authorBooksAll, getAuthorBooksAll, booksByTitle, getBooksByTitle, bookInfo, getBookInfo, workInfo, getWorkInfo, mergedBookInfo, getMergedBookInfo }}
         >
             {children}
         </BookContext.Provider>

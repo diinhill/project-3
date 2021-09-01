@@ -15,7 +15,7 @@ const UserList = () => {
 
     useEffect(() => {
         getBooksInList(listName)
-    })
+    }, [])
 
 
 

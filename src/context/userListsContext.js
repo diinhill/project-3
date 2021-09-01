@@ -12,7 +12,8 @@ export const UserListsContextProvider = ({ children }) => {
 
     const { user } = useContext(AuthContext)
     const [lists, setLists] = useState([])
-    const [booksInList, setBooksInList] = useState()
+    const [booksInList, setBooksInList] = useState([])
+    const [bookIsInList, setBookIsInList] = useState(false)
 
 
 
@@ -76,6 +77,19 @@ export const UserListsContextProvider = ({ children }) => {
 
     }
 
+    const getBookIsInList = (book) => {
+        db.collection(`user/${user.uid}/userlists`).get().then((book) => {
+            if (book.exists) {
+                console.log("Document data:", book.data())
+                setBookIsInList(true)
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!")
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error)
+        })
+    }
 
 
 
@@ -84,7 +98,7 @@ export const UserListsContextProvider = ({ children }) => {
 
 
     return (
-        <UserListsContext.Provider value={{ lists, createNewList, getLists, addBookToList, booksInList, removeBookFromList }}>
+        <UserListsContext.Provider value={{ lists, createNewList, getLists, addBookToList, booksInList, removeBookFromList, bookIsInList, getBookIsInList }}>
             {children}
         </UserListsContext.Provider>
     )

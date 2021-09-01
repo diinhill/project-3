@@ -21,7 +21,44 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { AuthContext } from '../context/authContext'
 // import { checkPropTypes } from 'prop-types';
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+
+
+
+
+// const SimpleMenu = () => {
+//     const [anchorEl, setAnchorEl] = useState(null)
+
+//     const handleClick = (event) => {
+//         setAnchorEl(event.currentTarget)
+//     }
+
+//     const handleClose = () => {
+//         setAnchorEl(null)
+//     }
+
+//     return (
+//         <div>
+//             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+//                 Open Menu
+//             </Button>
+//             <Menu
+//                 id="simple-menu"
+//                 anchorEl={anchorEl}
+//                 keepMounted
+//                 open={Boolean(anchorEl)}
+//                 onClose={handleClose}
+//             >
+//                 <MenuItem onClick={handleClose}>Profile</MenuItem>
+//                 <MenuItem onClick={handleClose}>My account</MenuItem>
+//                 <MenuItem onClick={handleClose}>Logout</MenuItem>
+//             </Menu>
+//         </div>
+//     )
+// }
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,29 +85,43 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
+
+
 const BookCard = () => {
 
     let { authorKey, bookKey } = useParams()
-    let { bookInfo, getBookInfo, workInfo } = useContext(BookContext)
-    const { addBookToList, removeBookFromList } = useContext(UserListsContext)
+    let { getMergedBookInfo, mergedBookInfo } = useContext(BookContext)
+    const { addBookToList, removeBookFromList, getBookIsInList, bookIsInList, getLists, lists } = useContext(UserListsContext)
+    const { user } = useContext(AuthContext)
 
     const classes = useStyles()
     const [expanded, setExpanded] = useState(false)
     const [selected, setSelected] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
 
 
 
     useEffect(() => {
-        getBookInfo(bookKey)
+        getMergedBookInfo(bookKey)
+        user && getLists()
+        user && getBookIsInList(mergedBookInfo)
     }, [bookKey])
+
 
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
 
     const handleSelected = () => {
-        !selected ? addBookToList(bookInfo, workInfo) && setSelected(true)
-            : removeBookFromList(bookInfo, workInfo) && setSelected(false)
+        !selected ? addBookToList(mergedBookInfo) && setSelected(true)
+            : removeBookFromList(mergedBookInfo) && setSelected(false)
+    }
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+    const handleClose = () => {
+        setAnchorEl(null)
     }
 
 
@@ -80,7 +131,7 @@ const BookCard = () => {
             <CardHeader
                 avatar={
                     <Avatar aria-label="book" className={classes.avatar}>
-                        {workInfo?.subjects || bookInfo?.subject}
+                        {mergedBookInfo?.subjects || mergedBookInfo?.subject}
                     </Avatar>
                 }
                 // action={
@@ -90,11 +141,11 @@ const BookCard = () => {
                 //         </Link>
                 //     </IconButton>
                 // }
-                title={workInfo?.title}
-                subheader={`${bookInfo?.first_publish_year}`}
+                title={mergedBookInfo?.title}
+                subheader={`${mergedBookInfo?.first_publish_year}`}
             />
             <CardMedia className={classes.media} title="book cover">
-                <img src={`https://covers.openlibrary.org/b/id/${bookInfo?.cover_i}-L.jpg`} alt='' />
+                <img src={`https://covers.openlibrary.org/b/id/${mergedBookInfo?.cover_i}-L.jpg`} alt='' />
             </CardMedia>
             {/* <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -103,17 +154,63 @@ const BookCard = () => {
       </CardContent> */}
 
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favourites"
-                    value="check"
-                    // selected={selected}
-                    // onChange={() => {
-                    // setSelected(!selected)
-                    // }}
-                    onChange={handleSelected}
-                >
-                    <AddIcon />
-                    {/* || <RemoveIcon /> */}
-                </IconButton>
+
+                {user ?
+                    (!bookIsInList ?
+                        <div>
+                            <IconButton aria-label="add to favourites"
+                                value="check"
+                                selected={selected}
+                                // onChange={() => {
+                                // setSelected(!selected)
+                                // }}
+                                // onChange={handleSelected}
+                                aria-controls="simple-menu" aria-haspopup="true"
+                                onClick={handleClick}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                {lists ?
+                                    <div>
+                                        {lists.forEach((list) => {
+                                            <MenuItem onClick={handleClose}>{list}</MenuItem>
+                                        })}
+                                        <MenuItem onClick={handleClose}>create new list</MenuItem>
+                                    </div>
+
+                                    :
+                                    <MenuItem onClick={handleClose}>create new list</MenuItem>
+
+                                }
+                            </Menu>
+                        </div>
+
+                        : <IconButton aria-label="add to favourites"
+                            value="check"
+                            selected={!selected}
+                            onChange={handleSelected}
+                        >
+                            <RemoveIcon />
+                        </IconButton>
+                    )
+                    :
+                    <Link to={'/login'}>
+                        <IconButton aria-label="add to favourites"
+                            value="check"
+                            selected={selected}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Link>
+                }
+
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
@@ -125,7 +222,7 @@ const BookCard = () => {
 
 
                 <div>
-                    {workInfo?.description &&
+                    {mergedBookInfo?.description &&
                         <IconButton
                             className={clsx(classes.expand, {
                                 [classes.expandOpen]: expanded,
@@ -145,7 +242,7 @@ const BookCard = () => {
                 <CardContent>
                     {/* <Typography paragraph>Method:</Typography> */}
                     <Typography paragraph>
-                        {workInfo?.description?.value || workInfo?.description}
+                        {mergedBookInfo?.description?.value || mergedBookInfo?.description}
                     </Typography>
                 </CardContent>
             </Collapse>
