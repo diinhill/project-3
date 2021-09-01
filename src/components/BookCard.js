@@ -23,8 +23,7 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../context/authContext'
 // import { checkPropTypes } from 'prop-types';
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+import AddRemoveBookButton from './AddRemoveBookButton'
 
 
 
@@ -90,38 +89,21 @@ const useStyles = makeStyles((theme) => ({
 const BookCard = () => {
 
     let { authorKey, bookKey } = useParams()
-    let { getMergedBookInfo, mergedBookInfo } = useContext(BookContext)
-    const { addBookToList, removeBookFromList, getBookIsInList, bookIsInList, getLists, lists } = useContext(UserListsContext)
+    let { getMergedBookInfoController, mergedBookInfo } = useContext(BookContext)
     const { user } = useContext(AuthContext)
 
     const classes = useStyles()
     const [expanded, setExpanded] = useState(false)
-    const [selected, setSelected] = useState(false)
-    const [anchorEl, setAnchorEl] = useState(null)
-
+    // const [selected, setSelected] = useState(false)
 
 
     useEffect(() => {
-        getMergedBookInfo(bookKey)
-        user && getLists()
-        user && getBookIsInList(mergedBookInfo)
+        getMergedBookInfoController(bookKey)
     }, [bookKey])
-
+    console.log('mergedBookInfo:', mergedBookInfo)
 
     const handleExpandClick = () => {
         setExpanded(!expanded)
-    }
-
-    const handleSelected = () => {
-        !selected ? addBookToList(mergedBookInfo) && setSelected(true)
-            : removeBookFromList(mergedBookInfo) && setSelected(false)
-    }
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget)
-    }
-    const handleClose = () => {
-        setAnchorEl(null)
     }
 
 
@@ -156,60 +138,18 @@ const BookCard = () => {
             <CardActions disableSpacing>
 
                 {user ?
-                    (!bookIsInList ?
-                        <div>
-                            <IconButton aria-label="add to favourites"
-                                value="check"
-                                selected={selected}
-                                // onChange={() => {
-                                // setSelected(!selected)
-                                // }}
-                                // onChange={handleSelected}
-                                aria-controls="simple-menu" aria-haspopup="true"
-                                onClick={handleClick}
-                            >
-                                <AddIcon />
-                            </IconButton>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                {lists ?
-                                    <div>
-                                        {lists.forEach((list) => {
-                                            <MenuItem onClick={handleClose}>{list}</MenuItem>
-                                        })}
-                                        <MenuItem onClick={handleClose}>create new list</MenuItem>
-                                    </div>
-
-                                    :
-                                    <MenuItem onClick={handleClose}>create new list</MenuItem>
-
-                                }
-                            </Menu>
-                        </div>
-
-                        : <IconButton aria-label="add to favourites"
-                            value="check"
-                            selected={!selected}
-                            onChange={handleSelected}
-                        >
-                            <RemoveIcon />
-                        </IconButton>
-                    )
+                    <IconButton aria-label="add to favourites">
+                        <AddRemoveBookButton mergedBookInfo={mergedBookInfo} />
+                    </IconButton>
                     :
                     <Link to={'/login'}>
-                        <IconButton aria-label="add to favourites"
-                            value="check"
-                            selected={selected}
-                        >
+                        <IconButton aria-label="add to favourites" value="check">
                             <AddIcon />
                         </IconButton>
                     </Link>
                 }
+
+
 
                 <IconButton aria-label="share">
                     <ShareIcon />
