@@ -95,8 +95,8 @@ export const BookContextProvider = ({ children }) => {
 
     }
 
-    const getMergedBookInfoController = async (bookKey) => {
-        const bookInfo = await getBookInfo(bookKey)
+    const getMergedBookInfoController = async (bKey) => {
+        const bookInfo = await getBookInfo(bKey)
         console.log(`bookInfo`, bookInfo)
         const workInfo = await getWorkInfo(bookInfo.key)
         console.log(`workInfo`, workInfo)
@@ -105,7 +105,7 @@ export const BookContextProvider = ({ children }) => {
 
     }
 
-    // console.log('mergedBookInfo:', mergedBookInfo)
+    console.log('mergedBookInfo:', mergedBookInfo)
 
 
 

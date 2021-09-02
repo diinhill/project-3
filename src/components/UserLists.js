@@ -32,7 +32,7 @@ const UserLists = () => {
         <div style={flexContainer} >
             <h2>User Lists</h2>
             {/* write message */}
-            <input type="text" placeholder='name of list' value={body} onChange={handleOnChange} />
+            <input type="text" placeholder='name of new list' value={body} onChange={handleOnChange} />
             <button onClick={handleCreateNewList} >create new list</button>
             {/* read messages */}
             {lists ? lists.map((list, index) => {
