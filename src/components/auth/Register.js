@@ -1,24 +1,30 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/authContext'
+import { useHistory } from 'react-router-dom'
+
 
 
 const Register = () => {
-    
-    const [state, setState] = useState({ email: "", password: "", name: "" })
 
+    const history = useHistory()
+    const [state, setState] = useState({ email: "", password: "", name: "" })
     const { register } = useContext(AuthContext)
 
-    const handleChange = (e) => {
 
+
+    const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
 
-    const handleOnSubmit = (event) => {
-        //pervent react from refreshing the page
+    async function handleOnSubmit(event) {
         event.preventDefault()
-        register(state)
+        try {
+            await register(state)
+            history.push("/login")
+        } catch (e) {
+            alert(e.message)
+        }
     }
-
     console.log('state', state)
 
 

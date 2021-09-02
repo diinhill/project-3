@@ -13,7 +13,7 @@ export const UserListsContextProvider = ({ children }) => {
     const { user } = useContext(AuthContext)
     const [lists, setLists] = useState([])
     const [booksInList, setBooksInList] = useState([])
-    // const [bookIsInList, setBookIsInList] = useState(false)
+    const [bookIsInList, setBookIsInList] = useState([])
 
 
 
@@ -21,118 +21,88 @@ export const UserListsContextProvider = ({ children }) => {
         db.collection(`user/${user.uid}/userlists`).doc(listName).set({
             userListName: listName,
             createdBy: user.displayName,
-            numberOfBooks: '',
+            numberOfBooks: db.collection(`user/${user.uid}/userlists`).doc(listName).length,
             createdOnDate: new Date()
         })
             .then(() => {
-                console.log("Document successfully written.")
+                console.log('Document successfully written.')
                 getLists()
             })
             .catch((error) => {
-                console.error("Error adding document: ", error)
+                console.error('Error adding document:', error)
             })
     }
-    const getLists = () => {
-        db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
-            const allLists = []
+
+
+    const getLists = async () => {
+        const allLists = []
+        await db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 allLists.push(doc.data())
             })
             console.log('allLists:', allLists)
-            setLists(allLists)
         })
+        setLists(allLists)
+        return allLists
     }
 
-
-    const addBookToList = (listName, bookObject) => {
-        db.collection(`user/${user.uid}/userlists/${listName}/books`).doc(bookObject.title).set(bookObject)
-            .then(() => {
-                console.log("Document successfully written.")
-            })
-            .catch((error) => {
-                console.error("Error adding document: ", error)
-            })
-    }
-    const getBooksInList = (listName) => {
-        db.collection(`user/${user.uid}/userlists/${listName}/books`).get().then((querySnapshot) => {
-            const allBooksInList = []
+    const getBooksInList = async (listName) => {
+        const allBooksInList = []
+        await db.collection(`user/${user.uid}/userlists/${listName}/books`).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 allBooksInList.push(doc.data())
             })
             console.log('allBooksInList:', allBooksInList)
-            setBooksInList(allBooksInList)
         })
+        setBooksInList(allBooksInList)
+        return allBooksInList
     }
 
-
-    const removeBookFromList = () => {
-
+    const addBookToList = (newOrExistingList, bookObject) => {
+        db.collection(`user/${user.uid}/userlists/${newOrExistingList}/books`).doc(bookObject.title).set(bookObject)
+            .then(() => {
+                console.log('Document successfully written.')
+            })
+            .catch((error) => {
+                console.error('Error adding document:', error)
+            })
     }
 
-    const getBookIsInList = (bookObject) => {
-        const bookExists = getLists().forEach((list) => {
-            list.forEach((item) => {
-                if (item.title == bookObject.title) {
-                    console.log("Document data:", bookObject)
-                    return bookObject
+    const removeBookFromList = (existingList, bookObject) => {
+        db.collection(`user/${user.uid}/userlists/${existingList}/books`).doc(bookObject.title).delete(bookObject)
+            .then(() => {
+                console.log('Document successfully deleted!')
+            })
+            .catch((error) => {
+                console.error('Error removing document:', error)
+            })
+    }
+
+    const getBookIsInList = async (bookObject) => {
+        const bookExistsInList = []
+        const allLists = await getLists()
+        allLists.forEach(async (list) => {
+            const allBooksInList = await getBooksInList(list.userListName)
+            allBooksInList.forEach((listItem) => {
+                if (listItem.title === bookObject.title) {
+                    console.log('bookObject found in this list:', list)
+                    bookExistsInList.push(list)
                 }
                 else {
-                    console.log("No such document!")
+                    console.log('bookObject not found in this list:', list)
                 }
             })
         })
-        if (bookExists) {
-            return true
-        } else {
-            return false
-        }
+        console.log('bookExistsInList:', bookExistsInList)
+        setBookIsInList(bookExistsInList)
+        return bookExistsInList
     }
-
-
-    // const getBookIsInList = (bookObject) => {
-    //     db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
-    //         const bookExists = []
-    //         bookExists = querySnapshot.where("", "array-contains", bookObject)
-    //         if (bookExists) {
-    //             console.log("Document data:", bookObject.data())
-    //             return true
-    //         } else {
-    //             console.log("No such document!")
-    //             return false
-    //         }
-
-    //         querySnapshot.forEach((doc) = {
-    //             if (doc contains bookObject) {
-    //                 console.log("Document data:", bookObject.data())
-    //                 bookExists.push(bookObject.data())
-    //             } else {
-    //                 console.log("No such document!")
-    //             }
-    //         })
-    //         if (bookObject.exists) {
-    //             console.log("Document data:", book.data())
-    //             setBookIsInList(true)
-    //         } else {
-    //             // doc.data() will be undefined in this case
-    //             console.log("No such document!")
-    //         }
-
-
-    //     }).catch((error) => {
-    //         console.log("Error getting document:", error)
-    //     })
-    // }
-
-
-
 
 
 
 
     return (
-        <UserListsContext.Provider value={{ lists, createNewList, getLists, addBookToList, booksInList, removeBookFromList, /*bookIsInList,*/ getBookIsInList }}>
+        <UserListsContext.Provider value={{ createNewList, lists, getLists, booksInList, getBooksInList, addBookToList, removeBookFromList, bookIsInList, getBookIsInList }}>
             {children}
         </UserListsContext.Provider>
     )

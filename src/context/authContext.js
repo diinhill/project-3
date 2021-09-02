@@ -1,18 +1,19 @@
 import { createContext, useState, useEffect } from 'react'
 import firebase from '../config'
 
+
 export const AuthContext = createContext()
+
 
 
 export const AuthContextProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
 
+
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
                 console.log('user:', user)
                 setUser(user)
             } else {
@@ -20,8 +21,6 @@ export const AuthContextProvider = ({ children }) => {
             }
         })
     }, [])
-
-
 
     const register = ({ email, password, name }) => {
         firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -60,16 +59,21 @@ export const AuthContextProvider = ({ children }) => {
             })
     }
 
-    // const addToFavorite = (favorite) => {
-    // }
+    const logout = () => {
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            setUser(null)
+        }).catch((error) => {
+            const errorCode = error.code
+            const errorMessage = error.message
+            console.log('errorMessage:', errorMessage)
+        })
+    }
 
-    // const getFavorites = () => {
-
-    // }
 
 
     return (
-        <AuthContext.Provider value={{ user, register, login }}>
+        <AuthContext.Provider value={{ user, register, login, logout }}>
             {children}
         </AuthContext.Provider>
     )

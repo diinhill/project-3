@@ -9,28 +9,23 @@ import MenuItem from '@material-ui/core/MenuItem'
 
 
 
-
-
-
 const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
-    const { addBookToList, removeBookFromList, getBookIsInList, bookIsInList, getLists, lists } = useContext(UserListsContext)
+
+    const { lists, addBookToList, removeBookFromList, bookIsInList, getBookIsInList } = useContext(UserListsContext)
     const [anchorEl, setAnchorEl] = useState(null)
+    const [newListName, setNewListName] = useState('')
 
 
-    // useEffect(() => {
-    //     getLists()
-    //     getBookIsInList(mergedBookInfo)
-    // }, [])
 
+    useEffect(() => {
+        mergedBookInfo && getBookIsInList(mergedBookInfo)
+    }, [mergedBookInfo])
+
+    console.log('mergedBookInfo:', mergedBookInfo)
     console.log('lists:', lists)
     console.log('bookIsInList:', bookIsInList)
 
-    const handleAddToSelectedList = (selectedList) => {
-        // !selected ? addBookToList(mergedBookInfo) && setSelected(true)
-        //     : removeBookFromList(mergedBookInfo) && setSelected(false)
-        mergedBookInfo && addBookToList(selectedList, mergedBookInfo)
-    }
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
@@ -38,57 +33,65 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
     const handleClose = () => {
         setAnchorEl(null)
     }
+    const handleOnChange = (e) => {
+        setNewListName(e.target.value)
+    }
+    const handleAddBookToNewList = (value) => {
+        addBookToList(value, mergedBookInfo)
+    }
+    const handleRemoveBookFromList = (value) => {
+        removeBookFromList(value, mergedBookInfo)
+    }
+
 
     return (
 
         <div>
-            {getBookIsInList(mergedBookInfo) &&
-                bookIsInList ?
+            {mergedBookInfo &&
+                (bookIsInList?.length === 0) ?
                 <div>
-                    <IconButton aria-label="add to favourites"
-                        value="check"
-                        // selected={selected}
-                        // onChange={() => {
-                        // setSelected(!selected)
-                        // }}
-                        // onChange={handleSelected}
-                        aria-controls="simple-menu" aria-haspopup="true"
-                        onClick={handleClick}
-                    >
+                    <IconButton aria-label="add to favourites" value="check" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <AddIcon />
                     </IconButton>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        {lists ?
+                    <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+
+                        {(lists?.length !== 0) ?
                             <div>
-                                {lists.forEach((list) => {
-                                    <MenuItem onClick={handleAddToSelectedList(list.userListName)}>{list.userListName}</MenuItem>
-                                })}
-                                <MenuItem onClick={handleClose}>create new list</MenuItem>
+                                {lists.map((list) =>
+                                    <MenuItem onClick={handleAddBookToNewList} value={list.userListName}>{list.userListName}</MenuItem>
+                                )}
+                                <MenuItem>
+                                    <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
+                                    <button onClick={handleAddBookToNewList}>create new list</button>
+                                </MenuItem>
                             </div>
-
                             :
-                            <MenuItem onClick={handleClose}>create new list</MenuItem>
-
+                            <MenuItem>
+                                <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
+                                <button onClick={handleAddBookToNewList}>create new list</button>
+                            </MenuItem>
                         }
                     </Menu>
                 </div>
 
-                : <IconButton aria-label="add to favourites"
-                    value="check"
-                // selected={!selected}
-                // onChange={handleSelected}
-                >
-                    <RemoveIcon />
-                </IconButton>
+                :
+
+                <div>
+                    <IconButton aria-label="remove from favourites" value="check" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        <RemoveIcon />
+                    </IconButton>
+                    <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+
+                        {bookIsInList.map((list) =>
+                            <MenuItem onClick={handleRemoveBookFromList} value={list.userListName}>{list.userListName}</MenuItem>
+                        )}
+
+                    </Menu>
+                </div>
             }
         </div>
     )
+
 }
 
 export default AddRemoveBookButton

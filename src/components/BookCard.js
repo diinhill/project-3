@@ -89,18 +89,23 @@ const useStyles = makeStyles((theme) => ({
 const BookCard = () => {
 
     let { authorKey, bookKey } = useParams()
-    let { getMergedBookInfoController, mergedBookInfo } = useContext(BookContext)
+    const { getMergedBookInfoController, mergedBookInfo } = useContext(BookContext)
+    // const { getBookIsInList, getLists, lists } = useContext(UserListsContext)
     const { user } = useContext(AuthContext)
 
     const classes = useStyles()
     const [expanded, setExpanded] = useState(false)
-    // const [selected, setSelected] = useState(false)
 
 
     useEffect(() => {
         getMergedBookInfoController(bookKey)
+        // user && getLists()
+        // mergedBookInfo && getBookIsInList(mergedBookInfo)
     }, [bookKey])
+
     console.log('mergedBookInfo:', mergedBookInfo)
+    // console.log('lists:', lists)
+    // console.log('bookIsInList:', getBookIsInList())
 
     const handleExpandClick = () => {
         setExpanded(!expanded)
@@ -137,10 +142,10 @@ const BookCard = () => {
 
             <CardActions disableSpacing>
 
-                {user ?
-                    <IconButton aria-label="add to favourites">
-                        <AddRemoveBookButton mergedBookInfo={mergedBookInfo} />
-                    </IconButton>
+                {mergedBookInfo && user ?
+                    // <IconButton aria-label="add to favourites">
+                    <AddRemoveBookButton mergedBookInfo={mergedBookInfo} /*bookIsInList={bookIsInList} lists={lists}*/ />
+                    /* </IconButton> */
                     :
                     <Link to={'/login'}>
                         <IconButton aria-label="add to favourites" value="check">

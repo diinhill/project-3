@@ -1,18 +1,27 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/authContext'
+import { useHistory } from 'react-router-dom'
 
 
 const Login = () => {
-    
+
+    const history = useHistory()
     const [state, setState] = useState({ email: "", password: "" })
     const { login } = useContext(AuthContext)
+
+
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
 
-    const handleOnSubmit = (event) => {
+    async function handleOnSubmit(event) {
         event.preventDefault()
-        login(state)
+        try {
+            await login(state)
+            history.push("/")
+        } catch (e) {
+            alert(e.message)
+        }
     }
 
 

@@ -17,6 +17,7 @@ import {
 } from 'react-router-dom'
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
+import Logout from './components/auth/Logout'
 import { NewBooksContextProvider } from './context/newBooksContext'
 import { BookContextProvider } from './context/bookContext'
 import { AuthContextProvider, AuthContext } from './context/authContext'
@@ -38,8 +39,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 }
 
 
-
 function App() {
+
 
   return (
 
@@ -74,6 +75,9 @@ function App() {
                   </Route>
                   <Route exact path='/login'>
                     <Login />
+                  </Route>
+                  <Route exact path='/logout'>
+                    <Logout />
                   </Route>
                   <PrivateRoute component={UserLists} exact path='/lists' />
                   <PrivateRoute component={UserList} exact path={`/lists/:listName`} />
