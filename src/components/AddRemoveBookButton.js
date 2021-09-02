@@ -5,6 +5,8 @@ import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import { Link } from 'react-router-dom'
 
 
 
@@ -39,9 +41,11 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
     const handleAddBookToNewList = (listName) => {
         console.log('add book to this list:', listName)
         addBookToList(listName, mergedBookInfo)
+        getListsIncludingThisBook(mergedBookInfo)
     }
     const handleRemoveBookFromList = (value) => {
         removeBookFromList(value, mergedBookInfo)
+        getListsIncludingThisBook(mergedBookInfo)
     }
 
 
@@ -83,11 +87,17 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
                     </IconButton>
                     <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
 
-                        {listsIncludingThisBook.map((list) =>
-                            <MenuItem onClick={handleRemoveBookFromList} value={list.userListName}>{list.userListName}</MenuItem>
+                        {listsIncludingThisBook.map((list, i) =>
+                            <MenuItem onClick={() => handleRemoveBookFromList(list.userListName)} key={i}>{list.userListName}</MenuItem>
                         )}
 
                     </Menu>
+                    <IconButton aria-label="see book in userlist">
+                        <Link to={`/lists/${listsIncludingThisBook[0].userListName}`}>
+                            <OpenInNewIcon />
+                        </Link>
+                    </IconButton>
+
                 </div>
             }
         </div>

@@ -40,13 +40,13 @@ function Nav() {
 
     const history = useHistory()
     const { user } = useContext(AuthContext)
-    // const { activeTheme, toggleTheme } = useContext(ThemeContext)
+    const { activeTheme, toggleTheme } = useContext(ThemeContext)
     const classes = useStyles()
 
     console.log('user:', user)
 
     const handleClick = () => {
-        // activeTheme === "light" ? toggleTheme("dark") : toggleTheme("light")
+        activeTheme === "light" ? toggleTheme("dark") : toggleTheme("light")
     }
 
 
@@ -54,9 +54,9 @@ function Nav() {
 
 
         <nav style={flexContainer}>
-            {/* <button onClick={handleClick}> */}
-            <BrightnessMediumOutlinedIcon />
-            {/* </button> */}
+            <button onClick={handleClick}>
+                <BrightnessMediumOutlinedIcon />
+            </button>
             {/* <button onClick={() => history.goBack()}> */}
             <ArrowBackOutlinedIcon style={{ color: 'darkblue' }} onClick={() => history.goBack()} />
             {/* </button> */}
