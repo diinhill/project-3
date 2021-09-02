@@ -12,19 +12,19 @@ import MenuItem from '@material-ui/core/MenuItem'
 const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
 
-    const { lists, addBookToList, removeBookFromList, bookIsInList, getBookIsInList } = useContext(UserListsContext)
+    const { lists, addBookToList, removeBookFromList, listsIncludingThisBook, getListsIncludingThisBook } = useContext(UserListsContext)
     const [anchorEl, setAnchorEl] = useState(null)
     const [newListName, setNewListName] = useState('')
 
 
 
     useEffect(() => {
-        mergedBookInfo && getBookIsInList(mergedBookInfo)
+        mergedBookInfo && getListsIncludingThisBook(mergedBookInfo)
     }, [mergedBookInfo])
 
     console.log('mergedBookInfo:', mergedBookInfo)
     console.log('lists:', lists)
-    console.log('bookIsInList:', bookIsInList)
+    console.log('listsIncludingThisBook:', listsIncludingThisBook)
 
 
     const handleClick = (event) => {
@@ -36,8 +36,9 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
     const handleOnChange = (e) => {
         setNewListName(e.target.value)
     }
-    const handleAddBookToNewList = (value) => {
-        addBookToList(value, mergedBookInfo)
+    const handleAddBookToNewList = (listName) => {
+        console.log('add book to this list:', listName)
+        addBookToList(listName, mergedBookInfo)
     }
     const handleRemoveBookFromList = (value) => {
         removeBookFromList(value, mergedBookInfo)
@@ -48,7 +49,7 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
         <div>
             {mergedBookInfo &&
-                (bookIsInList?.length === 0) ?
+                (listsIncludingThisBook?.length === 0) ?
                 <div>
                     <IconButton aria-label="add to favourites" value="check" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <AddIcon />
@@ -57,18 +58,18 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
                         {(lists?.length !== 0) ?
                             <div>
-                                {lists.map((list) =>
-                                    <MenuItem onClick={handleAddBookToNewList} value={list.userListName}>{list.userListName}</MenuItem>
+                                {lists.map((list, i) =>
+                                    <MenuItem onClick={() => handleAddBookToNewList(list.userListName)} key={i}>{list.userListName}</MenuItem>
                                 )}
                                 <MenuItem>
                                     <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
-                                    <button onClick={handleAddBookToNewList}>create new list</button>
+                                    <button onClick={() => handleAddBookToNewList(newListName)}>create new list</button>
                                 </MenuItem>
                             </div>
                             :
                             <MenuItem>
                                 <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
-                                <button onClick={handleAddBookToNewList}>create new list</button>
+                                <button onClick={() => handleAddBookToNewList(newListName)}>create new list</button>
                             </MenuItem>
                         }
                     </Menu>
@@ -82,7 +83,7 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
                     </IconButton>
                     <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
 
-                        {bookIsInList.map((list) =>
+                        {listsIncludingThisBook.map((list) =>
                             <MenuItem onClick={handleRemoveBookFromList} value={list.userListName}>{list.userListName}</MenuItem>
                         )}
 

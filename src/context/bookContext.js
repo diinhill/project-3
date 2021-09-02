@@ -6,35 +6,36 @@ export const BookContext = createContext()
 
 export const BookContextProvider = ({ children }) => {
 
-    const [authorInfoQ, setAuthorInfoQ] = useState()
-    const [authorInfo, setAuthorInfo] = useState()
     const [mergedAuthorInfo, setMergedAuthorInfo] = useState()
     const [authorBooksAll, setAuthorBooksAll] = useState()
     const [booksByTitle, setBooksByTitle] = useState()
-    // const [bookInfo, setBookInfo] = useState()
-    // const [workInfo, setWorkInfo] = useState()
     const [mergedBookInfo, setMergedBookInfo] = useState()
 
 
-    const getAuthorInfoQ = async (authorKey) => {
-        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=${authorKey}`)
+    const getAuthorInfoQ = async (key) => {
+        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=${key}`)
         const author = await response.json()
         console.log('authorInfoQ[0]:', author?.docs[0])
-        setAuthorInfoQ(author?.docs[0])
-        await getAuthorBooksAll(author?.docs[0].key)
+        return author.docs[0]
     }
-    const getAuthorInfo = async (authorKey) => {
-        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/authors/${authorKey}.json`)
-        const author = await response.json()
-        console.log('authorInfo:', author)
-        setAuthorInfo(author)
+    const getAuthorInfo = async (key) => {
+        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/authors/${key}.json`)
+        return await response.json()
+    }
+    const getMergedAuthorInfoController = async (authorKey) => {
+        const authorInfoQ = await getAuthorInfoQ(authorKey)
+        console.log('authorInfoQ:', authorInfoQ)
+        const authorInfo = await getAuthorInfo(authorKey)
+        console.log('authorInfo:', authorInfo)
+        const merged = { ...authorInfoQ, ...authorInfo }
+        setMergedAuthorInfo(merged)
+        await getAuthorBooksAll(merged.key)
+    }
+    // console.log('mergedAuthorInfo:', mergedAuthorInfo)
 
-        // just an idea on how to merge your 2 authors objects with spread operators. Note that similar properties get overriten by the last entry
-        const mergedAuthorInfo = { ...authorInfoQ, ...author }
-        console.log(`mergedAuthorInfo`, mergedAuthorInfo)
-    }
+
     const getAuthorBooksAll = async (key) => {
-        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/authors/${key}/works.json?limit=100`)
+        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/${key}/works.json?limit=100`)
         const allBooks = await response.json()
         console.log('allBooks.entries:', allBooks?.entries)
 
@@ -69,16 +70,6 @@ export const BookContextProvider = ({ children }) => {
         console.log(`iAMKull`, iAMKull)
     }
 
-    //old function 
-    // const getBooksByTitle = async (title, key) => {
-    //     const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${title}`)
-    //     const books = await response.json()
-    //     console.log('booksByTitle:', books?.docs)
-    //     setBooksByTitle( books?.docs.filter(item  =>  {
-    //         return (item?.author_key  === key) 
-    //     }))
-    // }
-
     const getBookInfo = async (key) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?q=${key}`)
         const book = await response.json()
@@ -105,14 +96,14 @@ export const BookContextProvider = ({ children }) => {
 
     }
 
-    console.log('mergedBookInfo:', mergedBookInfo)
+    // console.log('mergedBookInfo:', mergedBookInfo)
 
 
 
     return (
 
         <BookContext.Provider
-            value={{ authorInfoQ, getAuthorInfoQ, authorInfo, getAuthorInfo, authorBooksAll, getAuthorBooksAll, booksByTitle, getBooksByTitle, mergedBookInfo, getMergedBookInfoController }}
+            value={{ mergedAuthorInfo, getMergedAuthorInfoController, authorBooksAll, getAuthorBooksAll, booksByTitle, getBooksByTitle, mergedBookInfo, getMergedBookInfoController }}
         >
             {children}
         </BookContext.Provider>

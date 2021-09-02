@@ -13,7 +13,7 @@ export const UserListsContextProvider = ({ children }) => {
     const { user } = useContext(AuthContext)
     const [lists, setLists] = useState([])
     const [booksInList, setBooksInList] = useState([])
-    const [bookIsInList, setBookIsInList] = useState([])
+    const [listsIncludingThisBook, setListsIncludingThisBook] = useState([])
 
 
 
@@ -34,9 +34,9 @@ export const UserListsContextProvider = ({ children }) => {
     }
 
 
-    const getLists = async () => {
+    const getLists = () => {
         const allLists = []
-        await db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
+        db.collection(`user/${user.uid}/userlists`).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 allLists.push(doc.data())
             })
@@ -46,9 +46,9 @@ export const UserListsContextProvider = ({ children }) => {
         return allLists
     }
 
-    const getBooksInList = async (listName) => {
+    const getBooksInList = (listName) => {
         const allBooksInList = []
-        await db.collection(`user/${user.uid}/userlists/${listName}/books`).get().then((querySnapshot) => {
+        db.collection(`user/${user.uid}/userlists/${listName}/books`).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 allBooksInList.push(doc.data())
             })
@@ -78,31 +78,31 @@ export const UserListsContextProvider = ({ children }) => {
             })
     }
 
-    const getBookIsInList = async (bookObject) => {
-        const bookExistsInList = []
+    const getListsIncludingThisBook = async (bookObject) => {
+        const listsIncludingThisBook = []
         const allLists = await getLists()
         allLists.forEach(async (list) => {
             const allBooksInList = await getBooksInList(list.userListName)
             allBooksInList.forEach((listItem) => {
                 if (listItem.title === bookObject.title) {
                     console.log('bookObject found in this list:', list)
-                    bookExistsInList.push(list)
+                    listsIncludingThisBook.push(list)
                 }
                 else {
                     console.log('bookObject not found in this list:', list)
                 }
             })
         })
-        console.log('bookExistsInList:', bookExistsInList)
-        setBookIsInList(bookExistsInList)
-        return bookExistsInList
+        console.log('listsIncludingThisBook:', listsIncludingThisBook)
+        setListsIncludingThisBook(listsIncludingThisBook)
+        return listsIncludingThisBook
     }
 
 
 
 
     return (
-        <UserListsContext.Provider value={{ createNewList, lists, getLists, booksInList, getBooksInList, addBookToList, removeBookFromList, bookIsInList, getBookIsInList }}>
+        <UserListsContext.Provider value={{ createNewList, lists, getLists, booksInList, getBooksInList, addBookToList, removeBookFromList, listsIncludingThisBook, getListsIncludingThisBook }}>
             {children}
         </UserListsContext.Provider>
     )

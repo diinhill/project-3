@@ -15,11 +15,10 @@ import { red } from '@material-ui/core/colors'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-// import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
-// import { checkPropTypes } from 'prop-types';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -50,13 +49,11 @@ const useStyles = makeStyles((theme) => ({
 const AuthorCard = () => {
 
   let { authorKey } = useParams()
-  let { authorInfoQ, getAuthorInfoQ, authorInfo, getAuthorInfo } = useContext(BookContext)
+  let { mergedAuthorInfo, getMergedAuthorInfoController } = useContext(BookContext)
 
   useEffect(() => {
-      getAuthorInfoQ(authorKey)
-      getAuthorInfo(authorKey)
-      console.log('authorInfoQ:', authorInfoQ)
-      console.log('authorInfo:', authorInfo)
+    getMergedAuthorInfoController(authorKey)
+    console.log('mergedAuthorInfo:', mergedAuthorInfo)
   }, [authorKey])
 
 
@@ -69,38 +66,38 @@ const AuthorCard = () => {
 
 
   return (
-      <Card className={classes.root}>
-        <CardHeader
-          // avatar={
-          //   <Avatar aria-label="author" className={classes.avatar}>
-          //     A
-          //   </Avatar>
-          // }
-          // action={
-          //   <IconButton aria-label="settings">
-          //     <MoreVertIcon />
-          //   </IconButton>
-          // }
-          title={authorInfo?.name}
-          subheader={((`${authorInfo?.birth_date} - ${authorInfo?.death_date}`) || (`${authorInfoQ?.birth_date} - ${authorInfoQ?.death_date}`)) || "We didn't bother looking up the author's birth date."}
+    <Card className={classes.root}>
+      <CardHeader
+        // avatar={
+        //   <Avatar aria-label="author" className={classes.avatar}>
+        //     A
+        //   </Avatar>
+        // }
+        // action={
+        //   <IconButton aria-label="settings">
+        //     <MoreVertIcon />
+        //   </IconButton>
+        // }
+        title={mergedAuthorInfo?.name}
+        subheader={(`${mergedAuthorInfo?.birth_date} - ${mergedAuthorInfo?.death_date}`) || "We didn't bother looking up the author's birth date."}
 
-        />
-        {authorInfo?.photos && 
+      />
+      {mergedAuthorInfo?.photos &&
         <CardMedia className={classes.media} title="portrait author">
-          <img src={`https://covers.openlibrary.org/a/id/${authorInfo?.photos[0]}-M.jpg`} alt="Looking at the author's face is not recommended." />
+          <img src={`https://covers.openlibrary.org/a/id/${mergedAuthorInfo?.photos[0]}-M.jpg`} alt="Looking at the author's face is not recommended." />
         </CardMedia>
-        }
-        <CardContent>
-          <Paper>
-             <p>{`This author has written ${authorInfoQ?.work_count || "an unknown number of"} book(s) so far.`}</p>
-             <p><i>{authorInfoQ?.top_work}</i>{" is considered to be the author's finest work." || "We have no clue what the author's finest work might be."}</p>
-             <IconButton aria-label="show all books">
-                  <Link to={`/authors/${authorKey}/books/all`}>
-                    <ShareIcon />
-                  </Link>
-             </IconButton>
-          </Paper>
-        </CardContent> 
+      }
+      <CardContent>
+        <Paper>
+          <p>{`This author has written ${mergedAuthorInfo?.work_count || "an unknown number of"} book(s) so far.`}</p>
+          <p><i>{mergedAuthorInfo?.top_work}</i>{" is considered to be the author's finest work." || "We have no clue what the author's finest work might be."}</p>
+          <IconButton aria-label="show all books">
+            <Link to={`/authors/${authorKey}/books/all`}>
+              <ShareIcon />
+            </Link>
+          </IconButton>
+        </Paper>
+      </CardContent>
 
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
@@ -108,7 +105,7 @@ const AuthorCard = () => {
         </IconButton>
 
         <div>
-          {authorInfo?.bio &&
+          {mergedAuthorInfo?.bio &&
             <IconButton
               className={clsx(classes.expand, {
                 [classes.expandOpen]: expanded,
@@ -127,7 +124,7 @@ const AuthorCard = () => {
         <CardContent>
           {/* <Typography paragraph>Method:</Typography> */}
           <Typography paragraph>
-            {authorInfo?.bio}
+            {mergedAuthorInfo?.bio}
           </Typography>
         </CardContent>
       </Collapse>

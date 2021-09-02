@@ -8,10 +8,10 @@ import { List, ListItem } from '@material-ui/core'
 
 const AuthorBooksAll = () => {
 
-    let { authorInfoQ, authorBooksAll } = useContext(BookContext)
+    let { mergedAuthorInfo, authorBooksAll } = useContext(BookContext)
 
-   
-    console.log('authorInfoQ:', authorInfoQ)
+
+    console.log('mergedAuthorInfo:', mergedAuthorInfo)
     console.log('authorBooksAll:', authorBooksAll)
 
 
@@ -19,21 +19,21 @@ const AuthorBooksAll = () => {
 
         <List>
             <div style={{ margin: 'auto' }}>
-                <h2>{`books by ${authorInfoQ?.name}`}</h2>
-                { authorBooksAll?.map((listitem, i) => 
+                <h2>{`books by ${mergedAuthorInfo?.name}`}</h2>
+                {authorBooksAll?.map((listitem, i) =>
                     <ListItem key={i} listitem={listitem}>
-                        <BookListItem listitem={listitem} /> 
-                    </ListItem> )}
+                        <BookListItem listitem={listitem} />
+                    </ListItem>)}
             </div>
         </List>
-        
+
     )
 
 }
 export default AuthorBooksAll
 
 
- {/* { authorInfoQ && authorBooksAll?.filter((item, i) => {
+{/* { authorInfoQ && authorBooksAll?.filter((item, i) => {
                         return authorInfoQ[i].top_work && 
                             <ListItem bookTitle ={item[i].title} />
                 })} */}

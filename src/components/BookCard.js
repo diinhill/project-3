@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { BookContext } from '../context/bookContext'
-import { UserListsContext } from '../context/userListsContext'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
@@ -14,50 +13,13 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { red } from '@material-ui/core/colors'
 import AddIcon from '@material-ui/icons/Add'
-import RemoveIcon from '@material-ui/icons/Remove'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-// import MoreVertIcon from '@material-ui/icons/MoreVert'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../context/authContext'
-// import { checkPropTypes } from 'prop-types';
 import AddRemoveBookButton from './AddRemoveBookButton'
 
-
-
-
-// const SimpleMenu = () => {
-//     const [anchorEl, setAnchorEl] = useState(null)
-
-//     const handleClick = (event) => {
-//         setAnchorEl(event.currentTarget)
-//     }
-
-//     const handleClose = () => {
-//         setAnchorEl(null)
-//     }
-
-//     return (
-//         <div>
-//             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-//                 Open Menu
-//             </Button>
-//             <Menu
-//                 id="simple-menu"
-//                 anchorEl={anchorEl}
-//                 keepMounted
-//                 open={Boolean(anchorEl)}
-//                 onClose={handleClose}
-//             >
-//                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-//                 <MenuItem onClick={handleClose}>My account</MenuItem>
-//                 <MenuItem onClick={handleClose}>Logout</MenuItem>
-//             </Menu>
-//         </div>
-//     )
-// }
 
 
 const useStyles = makeStyles((theme) => ({
@@ -90,7 +52,6 @@ const BookCard = () => {
 
     let { authorKey, bookKey } = useParams()
     const { getMergedBookInfoController, mergedBookInfo } = useContext(BookContext)
-    // const { getBookIsInList, getLists, lists } = useContext(UserListsContext)
     const { user } = useContext(AuthContext)
 
     const classes = useStyles()
@@ -99,21 +60,17 @@ const BookCard = () => {
 
     useEffect(() => {
         getMergedBookInfoController(bookKey)
-        // user && getLists()
-        // mergedBookInfo && getBookIsInList(mergedBookInfo)
     }, [bookKey])
 
     console.log('mergedBookInfo:', mergedBookInfo)
-    // console.log('lists:', lists)
-    // console.log('bookIsInList:', getBookIsInList())
 
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
 
 
-
     return (
+
         <Card className={classes.root}>
             <CardHeader
                 avatar={
@@ -131,21 +88,21 @@ const BookCard = () => {
                 title={mergedBookInfo?.title}
                 subheader={`${mergedBookInfo?.first_publish_year}`}
             />
+
             <CardMedia className={classes.media} title="book cover">
                 <img src={`https://covers.openlibrary.org/b/id/${mergedBookInfo?.cover_i}-L.jpg`} alt='' />
             </CardMedia>
+
             {/* <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {authorInfo?.bio?.value || "no text"}
-        </Typography>
-      </CardContent> */}
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        {authorInfo?.bio?.value || "no text"}
+                    </Typography>
+                </CardContent> */}
+
 
             <CardActions disableSpacing>
-
                 {mergedBookInfo && user ?
-                    // <IconButton aria-label="add to favourites">
-                    <AddRemoveBookButton mergedBookInfo={mergedBookInfo} /*bookIsInList={bookIsInList} lists={lists}*/ />
-                    /* </IconButton> */
+                    <AddRemoveBookButton mergedBookInfo={mergedBookInfo} />
                     :
                     <Link to={'/login'}>
                         <IconButton aria-label="add to favourites" value="check">
@@ -153,9 +110,6 @@ const BookCard = () => {
                         </IconButton>
                     </Link>
                 }
-
-
-
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
@@ -164,8 +118,6 @@ const BookCard = () => {
                         <ShareIcon />
                     </Link>
                 </IconButton>
-
-
                 <div>
                     {mergedBookInfo?.description &&
                         <IconButton
@@ -180,7 +132,6 @@ const BookCard = () => {
                         </IconButton>
                     }
                 </div>
-
             </CardActions>
 
             <Collapse in={expanded} timeout="auto" unmountOnExit>

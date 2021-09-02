@@ -48,19 +48,19 @@ const BookSearch = () => {
     }, [selectedTitle])
 
 
-    return (  
-            <Autocomplete
-                options={booksByTitle}
-                getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
-                getOptionSelected={(option, value) => option.title === value.title}
-                filterOptions={(x) => x} // disable filtering on client
-                loading={booksByTitle.length === 0}
-                onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
-                renderInput={(params) =>
-                    <TextField {...params} label='Search for Title' variant='outlined' />
-                }
-                onChange={handleChange}
-            />
+    return (
+        <Autocomplete
+            options={booksByTitle}
+            getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
+            getOptionSelected={(option, value) => option.title === value.title}
+            filterOptions={(x) => x} // disable filtering on client
+            loading={booksByTitle.length === 0}
+            onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
+            renderInput={(params) =>
+                <TextField {...params} label='Search for Title' variant='outlined' />
+            }
+            onChange={handleChange}
+        />
     )
 }
 export default BookSearch
