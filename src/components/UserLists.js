@@ -2,6 +2,10 @@ import React, { useContext, useState, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
 import { Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import IconButton from '@material-ui/core/IconButton'
+import AddIcon from '@material-ui/icons/Add'
+import RemoveIcon from '@material-ui/icons/Remove'
+import UserList from './UserList'
 
 const flexContainer = { display: 'flex', flexDirection: 'column' }
 
@@ -9,22 +13,27 @@ const flexContainer = { display: 'flex', flexDirection: 'column' }
 
 const UserLists = () => {
 
-    const { lists, createNewList, getLists } = useContext(UserListsContext)
+    const { userlists, createOrAddBookToUserlistController, getUserlists, deleteUserlist } = useContext(UserListsContext)
     const [body, setBody] = useState('')
 
 
     useEffect(() => {
-        getLists()
+        getUserlists()
     }, [])
+
+    console.log('updated userlists:', userlists)
+
 
     const handleOnChange = (e) => {
         setBody(e.target.value)
     }
     const handleCreateNewList = () => {
-        createNewList(body)
+        createOrAddBookToUserlistController(body)
     }
-
-    console.log('newList:', lists)
+    const handleDeleteThisList = (userlist) => {
+        deleteUserlist(userlist)
+        getUserlists()
+    }
 
 
 
@@ -35,16 +44,19 @@ const UserLists = () => {
             <input type="text" placeholder='name of new list' value={body} onChange={handleOnChange} />
             <button onClick={handleCreateNewList} >create new list</button>
             {/* read messages */}
-            {lists ? lists.map((list, index) => {
+            {userlists ? userlists.map((list, i) => {
                 return (
-                    <div>
-                        <Link to={`/lists/${list.userListName}`}>
+                    <div key={i}>
+                        <Link to={`/lists/${list.nameOfUserlistInFirestore}`}>
                             <Paper>
-                                <h4>{list.userListName}</h4>
-                                <h6>{list.createdOnDate.toString()}</h6>
+                                <h4>{list.nameOfUserlist}</h4>
+                                <h6>{list?.userlistCreatedOnDate.toString() || list?.userlistUpdatedOnDate.toString()}</h6>
                                 <h6>{list.numberOfBooks}</h6>
                             </Paper>
                         </Link>
+                        <IconButton aria-label="delete this list" onClick={() => handleDeleteThisList(list)}>
+                            <RemoveIcon />
+                        </IconButton>
                     </div>
                 )
             }) : <h2>Loading...</h2>}

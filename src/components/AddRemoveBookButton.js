@@ -42,10 +42,12 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
         console.log('add book to this list:', listName)
         addBookToList(listName, mergedBookInfo)
         getListsIncludingThisBook(mergedBookInfo)
+        handleClose()
     }
     const handleRemoveBookFromList = (value) => {
         removeBookFromList(value, mergedBookInfo)
         getListsIncludingThisBook(mergedBookInfo)
+        handleClose()
     }
 
 

@@ -80,7 +80,7 @@ function App() {
                     <Logout />
                   </Route>
                   <PrivateRoute component={UserLists} exact path='/lists' />
-                  <PrivateRoute component={UserList} exact path={`/lists/:listName`} />
+                  <PrivateRoute component={UserList} exact path={`/lists/:nameOfList`} />
                 </Switch>
               </UserListsContextProvider>
             </BookContextProvider>

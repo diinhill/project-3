@@ -8,11 +8,11 @@ import { List, ListItem } from '@material-ui/core'
 
 const AuthorBooksAll = () => {
 
-    let { mergedAuthorInfo, authorBooksAll } = useContext(BookContext)
+    let { mergedAuthorInfo, booksByTitle } = useContext(BookContext)
 
 
     console.log('mergedAuthorInfo:', mergedAuthorInfo)
-    console.log('authorBooksAll:', authorBooksAll)
+    console.log('booksByTitle:', booksByTitle)
 
 
     return (
@@ -20,7 +20,7 @@ const AuthorBooksAll = () => {
         <List>
             <div style={{ margin: 'auto' }}>
                 <h2>{`books by ${mergedAuthorInfo?.name}`}</h2>
-                {authorBooksAll?.map((listitem, i) =>
+                {booksByTitle?.map((listitem, i) =>
                     <ListItem key={i} listitem={listitem}>
                         <BookListItem listitem={listitem} />
                     </ListItem>)}

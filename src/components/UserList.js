@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
-import UserLists from './UserLists'
 import { useParams } from 'react-router-dom'
+import { Paper } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 const flexContainer = { display: 'flex', flexDirection: 'column' }
 
@@ -9,12 +10,12 @@ const flexContainer = { display: 'flex', flexDirection: 'column' }
 
 const UserList = () => {
 
-    const { listName } = useParams()
-    const { booksInList, getBooksInList } = useContext(UserListsContext)
+    const { nameOfList } = useParams()
+    const { booksFromUserlist, getBooksFromUserlist } = useContext(UserListsContext)
 
 
     useEffect(() => {
-        getBooksInList(listName)
+        getBooksFromUserlist(nameOfList)
     }, [])
 
 
@@ -23,21 +24,22 @@ const UserList = () => {
 
         <div style={flexContainer}>
 
-            <h2>{listName}</h2>
+            <h2>{nameOfList}</h2>
 
-            {booksInList ? booksInList.map((list, index) => {
+            {booksFromUserlist?.map((book, i) => {
                 return (
-                    <div>
-                        {/* <Link to={`/authors/:authorKey/books/:bookKey`}>
+                    <div key={i}>
+                        <Link to={`/authors/:authorKey/books/:bookKey`}>
                             <Paper>
-                                <h4>{list.userListName}</h4>
-                                <h6>{list.createdOnDate.toString()}</h6>
-                                <h6>{list.numberOfBooks}</h6>
+                                <h4>{book?.title}</h4>
+                                <h6>{book?.name}</h6>
+                                <h6>{book?.first_publish_year}</h6>
+                                <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-S.jpg`} alt='' />
                             </Paper>
-                        </Link> */}
+                        </Link>
                     </div>
                 )
-            }) : <h2>Loading...</h2>}
+            })} : <h2>Loading...</h2>
         </div>
     )
 }

@@ -12,7 +12,7 @@ const flexContainer = { display: 'flex' }
 const Homepage = () => {
 
   let { newScifi, getNewScifi, newHorror, getNewHorror } = useContext(NewBooksContext)
-  const { activeTheme } = useContext(ThemeContext)
+  const { activeTheme, toggleTheme } = useContext(ThemeContext)
 
   useEffect(() => {
     getNewScifi()

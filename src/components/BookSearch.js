@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState, useContext } from 'react'
-import { BookContext } from '../context/bookContext'
+import React, { useCallback, useEffect, useState, } from 'react'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import TextField from '@material-ui/core/TextField'
 import debounce from 'lodash/debounce'
@@ -10,23 +9,24 @@ const BookSearch = () => {
 
     const history = useHistory()
 
-    let { booksByTitle, getBooksByTitle } = useContext(BookContext)
+    const [options, setOptions] = useState([])
     const [inputValue, setInputValue] = useState('')
     const [selectedTitle, setSelectedTitle] = useState('')
     const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
     const [selectedEdition, setSelectedEdition] = useState('')
+    const [reset, setReset] = useState(false)
 
 
-    // const getOptionsAsync = async (text) => {
-    //     const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${text}`)
-    //     const obj = await response.json()
-    //     console.log('obj:', obj)
-    //     console.log('obj.docs:', obj.docs)
-    //     setOptions(obj.docs)
-    // }
+    const getOptionsAsync = async (text) => {
+        const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${text}`)
+        const obj = await response.json()
+        console.log('obj:', obj)
+        console.log('obj.docs:', obj.docs)
+        setOptions(obj.docs)
+    }
 
     const getOptionsDelayed = useCallback(debounce((text, callback) => {
-        getBooksByTitle(text)
+        getOptionsAsync(text)
     }, 500)
         , [])
 
@@ -36,25 +36,34 @@ const BookSearch = () => {
 
     const handleChange = ((event, value) => {
         setSelectedTitle(value.title)
-        setSelectedAuthorKey(value.author_key[0])
-        setSelectedEdition(value.cover_edition_key)
+        value?.author_key ? setSelectedAuthorKey(value?.author_key[0]) : handleInsufficientDataInOptionSelected()
+        value?.cover_edition_key ? setSelectedEdition(value?.cover_edition_key) : handleInsufficientDataInOptionSelected()
     })
 
     useEffect(() => {
-        selectedTitle && history.push(`/authors/${selectedAuthorKey}/books/${selectedEdition}`)
+        (selectedTitle && selectedAuthorKey && selectedEdition) && history.push(`/authors/${selectedAuthorKey}/books/${selectedEdition}`)
+        console.log('options:', options)
         console.log('selectedTitle:', selectedTitle)
         console.log('selectedAuthorKey:', selectedAuthorKey)
         console.log('selectedEdition:', selectedEdition)
     }, [selectedTitle])
 
+    const handleInsufficientDataInOptionSelected = () => {
+        alert('insufficient data! try another book, please.')
+        setReset(!reset)
+        setInputValue('')
+        setOptions([])
+        setSelectedTitle('')
+    }
+
 
     return (
         <Autocomplete
-            options={booksByTitle}
-            getOptionLabel={(option) => `${option.title} by ${option.author_name}`}
+            key={reset}
+            options={options}
+            getOptionLabel={(option) => `${option.title} by ${option?.author_name}`}
             getOptionSelected={(option, value) => option.title === value.title}
-            filterOptions={(x) => x} // disable filtering on client
-            loading={booksByTitle.length === 0}
+            loading={(options.length === 0)}
             onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
             renderInput={(params) =>
                 <TextField {...params} label='Search for Title' variant='outlined' />

@@ -7,7 +7,7 @@ export const BookContext = createContext()
 export const BookContextProvider = ({ children }) => {
 
     const [mergedAuthorInfo, setMergedAuthorInfo] = useState()
-    const [authorBooksAll, setAuthorBooksAll] = useState()
+    // const [authorBooksAll, setAuthorBooksAll] = useState()
     const [booksByTitle, setBooksByTitle] = useState()
     const [mergedBookInfo, setMergedBookInfo] = useState()
 
@@ -48,16 +48,14 @@ export const BookContextProvider = ({ children }) => {
         const booksByTitleandAuthorRequests = allBookEntries.map(item => `https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${item.title}&author=${key}`)
 
         //We fetch all the uls from the previous array once they are all done
-        const booksByTitleandAuthorResults = await Promise.all(booksByTitleandAuthorRequests.map(url => fetch(url)))
-            .then(async (res) => {
-                return Promise.all(
-                    res.map(async (data) => await data.json())
-                )
-            })
-        console.log('booksByTitleandAuthorResults:', booksByTitleandAuthorResults)
-        setBooksByTitle(booksByTitleandAuthorResults)
-
-
+        // const booksByTitleandAuthorResults = await Promise.all(booksByTitleandAuthorRequests.map(url => fetch(url)))
+        //     .then(async (res) => {
+        //         return Promise.all(
+        //             res.map(async (data) => await data.json())
+        //         )
+        //     })
+        // console.log('booksByTitleandAuthorResults:', booksByTitleandAuthorResults)
+        // setBooksByTitle(booksByTitleandAuthorResults)
 
         // this does exactly the same in a cool one liner for maximum swag
         // since I noticed there was multiple editions of the same book and I know that this would drive you crazy I used the map to aslo sort and only select the oldest publication 
@@ -68,6 +66,7 @@ export const BookContextProvider = ({ children }) => {
                 return allPublications.docs.sort((a, b) => a.first_publish_year - b.first_publish_year)[0]
             })))
         console.log(`iAMKull`, iAMKull)
+        setBooksByTitle(iAMKull)
     }
 
     const getBookInfo = async (key) => {
@@ -103,7 +102,7 @@ export const BookContextProvider = ({ children }) => {
     return (
 
         <BookContext.Provider
-            value={{ mergedAuthorInfo, getMergedAuthorInfoController, authorBooksAll, getAuthorBooksAll, booksByTitle, getBooksByTitle, mergedBookInfo, getMergedBookInfoController }}
+            value={{ mergedAuthorInfo, getMergedAuthorInfoController, booksByTitle, getBooksByTitle, mergedBookInfo, getMergedBookInfoController }}
         >
             {children}
         </BookContext.Provider>
