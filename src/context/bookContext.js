@@ -7,7 +7,6 @@ export const BookContext = createContext()
 export const BookContextProvider = ({ children }) => {
 
     const [mergedAuthorInfo, setMergedAuthorInfo] = useState()
-    // const [authorBooksAll, setAuthorBooksAll] = useState()
     const [booksByTitle, setBooksByTitle] = useState()
     const [mergedBookInfo, setMergedBookInfo] = useState()
 
@@ -15,7 +14,7 @@ export const BookContextProvider = ({ children }) => {
     const getAuthorInfoQ = async (key) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search/authors.json?q=${key}`)
         const author = await response.json()
-        console.log('authorInfoQ[0]:', author?.docs[0])
+        // console.log('authorInfoQ[0]:', author?.docs[0])
         return author.docs[0]
     }
     const getAuthorInfo = async (key) => {
@@ -24,9 +23,9 @@ export const BookContextProvider = ({ children }) => {
     }
     const getMergedAuthorInfoController = async (authorKey) => {
         const authorInfoQ = await getAuthorInfoQ(authorKey)
-        console.log('authorInfoQ:', authorInfoQ)
+        // console.log('authorInfoQ:', authorInfoQ)
         const authorInfo = await getAuthorInfo(authorKey)
-        console.log('authorInfo:', authorInfo)
+        // console.log('authorInfo:', authorInfo)
         const merged = { ...authorInfoQ, ...authorInfo }
         setMergedAuthorInfo(merged)
         await getAuthorBooksAll(merged.key)
@@ -38,15 +37,12 @@ export const BookContextProvider = ({ children }) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/${key}/works.json?limit=100`)
         const allBooks = await response.json()
         console.log('allBooks.entries:', allBooks?.entries)
-
         getBooksByTitle(allBooks?.entries, key)
     }
 
     const getBooksByTitle = async (allBookEntries, key) => {
-
         //we make an array of urls for every book and insert directly the author in the search query (avoid having to filter by artist key afterward)
         const booksByTitleandAuthorRequests = allBookEntries.map(item => `https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?title=${item.title}&author=${key}`)
-
         //We fetch all the uls from the previous array once they are all done
         // const booksByTitleandAuthorResults = await Promise.all(booksByTitleandAuthorRequests.map(url => fetch(url)))
         //     .then(async (res) => {
@@ -72,9 +68,7 @@ export const BookContextProvider = ({ children }) => {
     const getBookInfo = async (key) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/http://openlibrary.org/search.json?q=${key}`)
         const book = await response.json()
-        console.log('bookInfo:', book.docs)
-        console.log('bookInfo[0]:', book?.docs[0])
-        console.log('bookInfo[0].author_key:', book.docs[0].author_key[0])
+        // console.log('bookInfo[0]:', book?.docs[0])
         return book.docs[0]
         // setBookInfo(book?.docs[0])
         // await getWorkInfo(book?.docs[0].key)
@@ -82,7 +76,6 @@ export const BookContextProvider = ({ children }) => {
     const getWorkInfo = async (key) => {
         const response = await fetch(`https://cab-cors-anywhere.herokuapp.com/https://openlibrary.org/${key}.json`)
         return await response.json()
-
     }
 
     const getMergedBookInfoController = async (bKey) => {

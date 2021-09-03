@@ -14,7 +14,7 @@ const BookSearch = () => {
     const [selectedTitle, setSelectedTitle] = useState('')
     const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
     const [selectedEdition, setSelectedEdition] = useState('')
-    const [reset, setReset] = useState(false)
+    const [resetInput, setResetInput] = useState(false)
 
 
     const getOptionsAsync = async (text) => {
@@ -50,7 +50,7 @@ const BookSearch = () => {
 
     const handleInsufficientDataInOptionSelected = () => {
         alert('insufficient data! try another book, please.')
-        setReset(!reset)
+        setResetInput(!resetInput)
         setInputValue('')
         setOptions([])
         setSelectedTitle('')
@@ -59,7 +59,7 @@ const BookSearch = () => {
 
     return (
         <Autocomplete
-            key={reset}
+            key={resetInput}
             options={options}
             getOptionLabel={(option) => `${option.title} by ${option?.author_name}`}
             getOptionSelected={(option, value) => option.title === value.title}

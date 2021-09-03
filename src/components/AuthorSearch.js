@@ -13,6 +13,7 @@ const AuthorSearch = () => {
   const [inputValue, setInputValue] = useState('')
   const [selectedAuthorKey, setSelectedAuthorKey] = useState('')
   const [selectedAuthorName, setSelectedAuthorName] = useState('')
+  const [resetInput, setResetInput] = useState(false)
 
 
   const getOptionsAsync = async (text) => {
@@ -33,8 +34,8 @@ const AuthorSearch = () => {
   }, [inputValue])
 
   const handleChange = ((event, value) => {
-    setSelectedAuthorKey(options[0].key)
     setSelectedAuthorName(value.name)
+    options[0].key ? setSelectedAuthorKey(options[0].key) : handleInsufficientDataInOptionSelected()
   })
 
   useEffect(() => {
@@ -43,14 +44,21 @@ const AuthorSearch = () => {
     console.log('selectedAuthorName:', selectedAuthorName)
   }, [selectedAuthorKey])
 
+  const handleInsufficientDataInOptionSelected = () => {
+    alert('insufficient data! try another book, please.')
+    setResetInput(!resetInput)
+    setInputValue('')
+    setOptions([])
+    setSelectedAuthorName('')
+  }
 
 
   return (
     <Autocomplete
+      key={resetInput}
       options={options}
       getOptionLabel={(option) => option.name}
       getOptionSelected={(option, value) => option.name === value.name}
-      filterOptions={(x) => x} // disable filtering on client
       loading={options.length === 0}
       onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
       renderInput={(params) =>

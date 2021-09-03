@@ -14,19 +14,19 @@ import { Link } from 'react-router-dom'
 const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
 
-    const { lists, addBookToList, removeBookFromList, listsIncludingThisBook, getListsIncludingThisBook } = useContext(UserListsContext)
+    const { userlists, createOrAddBookToUserlistController, removeBookFromUserlist, userlistsIncludingThisBook, getUserlistsIncludingThisBook } = useContext(UserListsContext)
     const [anchorEl, setAnchorEl] = useState(null)
-    const [newListName, setNewListName] = useState('')
+    const [nameOfNewList, setNameOfNewList] = useState('')
 
 
 
-    useEffect(() => {
-        mergedBookInfo && getListsIncludingThisBook(mergedBookInfo)
+    useEffect(async () => {
+        mergedBookInfo && await getUserlistsIncludingThisBook(mergedBookInfo)
     }, [mergedBookInfo])
 
+    console.log('userlistsIncludingThisBook:', userlistsIncludingThisBook)
     console.log('mergedBookInfo:', mergedBookInfo)
-    console.log('lists:', lists)
-    console.log('listsIncludingThisBook:', listsIncludingThisBook)
+    console.log('userlists:', userlists)
 
 
     const handleClick = (event) => {
@@ -36,17 +36,17 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
         setAnchorEl(null)
     }
     const handleOnChange = (e) => {
-        setNewListName(e.target.value)
+        setNameOfNewList(e.target.value)
     }
-    const handleAddBookToNewList = (listName) => {
-        console.log('add book to this list:', listName)
-        addBookToList(listName, mergedBookInfo)
-        getListsIncludingThisBook(mergedBookInfo)
+    const handleAddBookToNewList = (nameOfList) => {
+        console.log('add book to this list:', nameOfList)
+        createOrAddBookToUserlistController(nameOfList, mergedBookInfo)
+        getUserlistsIncludingThisBook(mergedBookInfo)
         handleClose()
     }
-    const handleRemoveBookFromList = (value) => {
-        removeBookFromList(value, mergedBookInfo)
-        getListsIncludingThisBook(mergedBookInfo)
+    const handleRemoveBookFromList = (nameOfList) => {
+        removeBookFromUserlist(nameOfList, mergedBookInfo)
+        getUserlistsIncludingThisBook(mergedBookInfo)
         handleClose()
     }
 
@@ -54,28 +54,28 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
     return (
 
         <div>
-            {mergedBookInfo &&
-                (listsIncludingThisBook?.length === 0) ?
+            {userlistsIncludingThisBook &&
+                (userlistsIncludingThisBook.length === 0) ?
                 <div>
                     <IconButton aria-label="add to favourites" value="check" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <AddIcon />
                     </IconButton>
                     <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
 
-                        {(lists?.length !== 0) ?
+                        {(userlists?.length !== 0) ?
                             <div>
-                                {lists.map((list, i) =>
-                                    <MenuItem onClick={() => handleAddBookToNewList(list.userListName)} key={i}>{list.userListName}</MenuItem>
+                                {userlists.map((list, i) =>
+                                    <MenuItem onClick={() => handleAddBookToNewList(list.nameOfUserlistInFirestore)} key={i}>{list.nameOfUserlist}</MenuItem>
                                 )}
                                 <MenuItem>
-                                    <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
-                                    <button onClick={() => handleAddBookToNewList(newListName)}>create new list</button>
+                                    <input type="text" placeholder='name of new list' value={nameOfNewList} onChange={handleOnChange} />
+                                    <button onClick={() => handleAddBookToNewList(nameOfNewList)}>create new list</button>
                                 </MenuItem>
                             </div>
                             :
                             <MenuItem>
-                                <input type="text" placeholder='name of new list' value={newListName} onChange={handleOnChange} />
-                                <button onClick={() => handleAddBookToNewList(newListName)}>create new list</button>
+                                <input type="text" placeholder='name of new list' value={nameOfNewList} onChange={handleOnChange} />
+                                <button onClick={() => handleAddBookToNewList(nameOfNewList)}>create new list</button>
                             </MenuItem>
                         }
                     </Menu>
@@ -89,13 +89,13 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
                     </IconButton>
                     <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
 
-                        {listsIncludingThisBook.map((list, i) =>
-                            <MenuItem onClick={() => handleRemoveBookFromList(list.userListName)} key={i}>{list.userListName}</MenuItem>
+                        {userlistsIncludingThisBook.map((list, i) =>
+                            <MenuItem onClick={() => handleRemoveBookFromList(list.nameOfUserlist)} key={i}>{list.nameOfUserlist}</MenuItem>
                         )}
 
                     </Menu>
                     <IconButton aria-label="see book in userlist">
-                        <Link to={`/lists/${listsIncludingThisBook[0].userListName}`}>
+                        <Link to={`/lists/${userlistsIncludingThisBook[0].nameOfUserlistInFirestore}`}>
                             <OpenInNewIcon />
                         </Link>
                     </IconButton>

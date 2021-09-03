@@ -18,7 +18,7 @@ const Login = () => {
         event.preventDefault()
         try {
             await login(state)
-            history.push("/")
+            history.goForward() || history.goBack()
         } catch (e) {
             alert(e.message)
         }

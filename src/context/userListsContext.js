@@ -54,7 +54,7 @@ export const UserListsContextProvider = ({ children }) => {
             })
                 .then(() => {
                     console.log(`document successfully written for: userlist ${nameOfListNewOrExisting}`)
-                    getUserlists()
+                    // getUserlists()
                 })
                 .catch((error) => {
                     console.error(`error adding document for: userlist ${nameOfListNewOrExisting}`, error)
@@ -66,7 +66,7 @@ export const UserListsContextProvider = ({ children }) => {
                 nameOfUserlist: nameOfListNewOrExisting,
                 nameOfUser: user.displayName,
                 numberOfBooks: 0,
-                userlistCreatedOnDate: new Date()
+                userlistUpdatedOnDate: new Date()
             })
                 .then(() => {
                     console.log(`document successfully written for: userlist ${nameOfListNewOrExisting}`)
@@ -130,7 +130,7 @@ export const UserListsContextProvider = ({ children }) => {
             querySnapshot.forEach((doc) => {
                 lists.push(doc.data())
             })
-            console.log('userlists:', lists)
+            // console.log('userlists:', lists)
         })
         setUserlists(lists)
         return lists
@@ -143,7 +143,7 @@ export const UserListsContextProvider = ({ children }) => {
             querySnapshot.forEach((doc) => {
                 booksFromList.push(doc.data())
             })
-            console.log('booksFromUserlist:', booksFromList)
+            // console.log('booksFromUserlist:', booksFromList)
         })
         setBooksFromUserlist(booksFromList)
         return booksFromList
@@ -153,7 +153,7 @@ export const UserListsContextProvider = ({ children }) => {
         const userlistsIncludingThisBook = []
         const lists = await getUserlists()
         lists.forEach(async (list) => {
-            const booksFromList = await getBooksFromUserlist(list.nameOfUserlist)
+            const booksFromList = await getBooksFromUserlist(list.nameOfUserlistInFirestore)
             booksFromList.forEach((item) => {
                 if (item.title === bookObject.title) {
                     console.log('bookObject found in this list:', list.nameOfUserlist)
@@ -164,7 +164,7 @@ export const UserListsContextProvider = ({ children }) => {
                 }
             })
         })
-        console.log('userlistsIncludingThisBook:', userlistsIncludingThisBook)
+        // console.log('userlistsIncludingThisBook:', userlistsIncludingThisBook)
         setUserlistsIncludingThisBook(userlistsIncludingThisBook)
         return userlistsIncludingThisBook
     }
