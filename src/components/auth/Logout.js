@@ -14,7 +14,7 @@ const Logout = () => {
         event.preventDefault()
         try {
             await logout()
-            history.push('/')
+            history.push('/login')
         } catch (e) {
             alert(e.message)
         }

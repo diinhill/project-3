@@ -3,6 +3,7 @@ import { AuthContext } from '../../context/authContext'
 import { useHistory } from 'react-router-dom'
 
 
+
 const Login = () => {
 
     const history = useHistory()
@@ -14,11 +15,15 @@ const Login = () => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
 
+    const returnToPreviousPage = () => {
+        /*!('/lists') ?*/ history.goBack() /*: history.push('/lists')*/
+    }
+
     async function handleOnSubmit(event) {
         event.preventDefault()
         try {
             await login(state)
-            history.goForward() || history.goBack()
+            returnToPreviousPage()
         } catch (e) {
             alert(e.message)
         }

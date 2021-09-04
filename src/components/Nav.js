@@ -73,6 +73,9 @@ function Nav() {
                         <Link to="/books">Books</Link>
                     </li>
                     <li>
+                        <Link to="/lists/public">Lists</Link>
+                    </li>
+                    <li>
                         {!user ? <Link to="/login">Login</Link>
                             : <Logout />}
                     </li>

@@ -10,15 +10,22 @@ const flexContainer = { display: 'flex', flexDirection: 'column' }
 
 const UserList = () => {
 
-    const { nameOfList } = useParams()
-    const { booksFromUserlist, getBooksFromUserlist } = useContext(UserListsContext)
+    const { listId } = useParams()
+    const { booksFromUserlist, getBooksFromUserlist, getPublicListId, deletePublicListId } = useContext(UserListsContext)
+    const [publicListId, setPublicListId] = useState('')
 
 
     useEffect(() => {
-        getBooksFromUserlist(nameOfList)
-    }, [nameOfList])
+        getBooksFromUserlist(listId)
+    }, [listId])
 
     console.log('booksFromUserlist:', booksFromUserlist)
+
+    const handleListSettings = async () => {
+        !publicListId ? setPublicListId(await getPublicListId(listId))
+            : setPublicListId(await deletePublicListId(publicListId, listId))
+        getBooksFromUserlist(listId)
+    }
 
 
 
@@ -26,7 +33,7 @@ const UserList = () => {
 
         <div style={flexContainer}>
 
-            <h2>{nameOfList}</h2>
+            <h2>{listId.nameOfList}</h2>
 
             {booksFromUserlist ?
                 (booksFromUserlist.length !== 0) ?
@@ -52,6 +59,10 @@ const UserList = () => {
 
                 : <h6>Loading...</h6>
             }
+
+            {!publicListId ?
+                <button aria-label='set list to public' onClick={() => handleListSettings()}>set list to public</button>
+                : <button aria-label='set list to private' onClick={() => handleListSettings()}>set list to private</button>}
 
         </div>
     )

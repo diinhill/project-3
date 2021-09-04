@@ -8,6 +8,8 @@ import BookSearch from './components/BookSearch'
 import BookCard from './components/BookCard'
 import UserLists from './components/UserLists'
 import UserList from './components/UserList'
+import PublicLists from './components/PublicLists'
+import PublicList from './components/PublicList'
 import React, { useContext } from 'react'
 import {
   BrowserRouter as Router,
@@ -22,7 +24,7 @@ import { NewBooksContextProvider } from './context/newBooksContext'
 import { BookContextProvider } from './context/bookContext'
 import { AuthContextProvider, AuthContext } from './context/authContext'
 import { UserListsContextProvider } from './context/userListsContext'
-// import { ThemeProvider } from './context/themeContext'
+import { ThemeProvider } from './context/themeContext'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -70,6 +72,12 @@ function App() {
                   <Route exact path={`/authors/:authorKey/books/:bookKey`}>
                     <BookCard />
                   </Route>
+                  <Route exact path='/lists/public'>
+                    <PublicLists />
+                  </Route>
+                  <Route exact path={`/lists/public/:publicListId`}>
+                    <PublicList />
+                  </Route>
                   <Route exact path='/register'>
                     <Register />
                   </Route>
@@ -80,7 +88,7 @@ function App() {
                     <Logout />
                   </Route>
                   <PrivateRoute component={UserLists} exact path='/lists' />
-                  <PrivateRoute component={UserList} exact path={`/lists/:nameOfList`} />
+                  <PrivateRoute component={UserList} exact path={`/lists/:listId`} />
                 </Switch>
               </UserListsContextProvider>
             </BookContextProvider>

@@ -53,9 +53,9 @@ const AuthorCard = () => {
 
   useEffect(() => {
     getMergedAuthorInfoController(authorKey)
-    console.log('mergedAuthorInfo:', mergedAuthorInfo)
   }, [authorKey])
 
+  console.log('mergedAuthorInfo:', mergedAuthorInfo)
 
   const classes = useStyles()
   const [expanded, setExpanded] = useState(false)
@@ -94,15 +94,16 @@ const AuthorCard = () => {
           <IconButton aria-label="show all books">
             <Link to={`/authors/${authorKey}/books/all`}>
               <ShareIcon />
+              see all books
             </Link>
           </IconButton>
         </Paper>
       </CardContent>
 
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        {/* <IconButton aria-label="add to favorites">
           <FavoriteIcon />
-        </IconButton>
+        </IconButton> */}
 
         <div>
           {mergedAuthorInfo?.bio &&
@@ -124,7 +125,7 @@ const AuthorCard = () => {
         <CardContent>
           {/* <Typography paragraph>Method:</Typography> */}
           <Typography paragraph>
-            {mergedAuthorInfo?.bio}
+            {mergedAuthorInfo?.bio?.value || mergedAuthorInfo?.bio}
           </Typography>
         </CardContent>
       </Collapse>

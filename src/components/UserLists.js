@@ -11,7 +11,7 @@ const flexContainer = { display: 'flex', flexDirection: 'column' }
 
 const UserLists = () => {
 
-    const { userlists, createOrAddBookToUserlistController, getUserlists, deleteUserlist } = useContext(UserListsContext)
+    const { userlists, createOrAddBookToUserlistController, getUserlists, deleteUserlist, } = useContext(UserListsContext)
     const [body, setBody] = useState('')
 
 
@@ -29,8 +29,8 @@ const UserLists = () => {
         createOrAddBookToUserlistController(body)
         getUserlists()
     }
-    const handleDeleteThisList = (userlist) => {
-        deleteUserlist(userlist)
+    const handleDeleteThisList = (list) => {
+        deleteUserlist(list)
         getUserlists()
     }
 
@@ -49,10 +49,10 @@ const UserLists = () => {
                 userlists.map((list, i) => {
                     return (
                         <div key={i}>
-                            <Link to={`/lists/${list?.nameOfUserlistInFirestore}`}>
+                            <Link to={`/lists/${list?.listId}`}>
                                 <Paper>
-                                    <h4>{list?.nameOfUserlist}</h4>
-                                    <h6>{list?.userlistUpdatedOnDate.toString()}</h6>
+                                    <h4>{list?.nameOfList}</h4>
+                                    <h6>{((list?.listUpdatedOnDate).toDate().toLocaleString('en').substring(0, 14))}</h6>
                                     <h6>{list?.numberOfBooks}</h6>
                                 </Paper>
                             </Link>

@@ -115,12 +115,10 @@ const BookCard = () => {
                             :
                             <AddRemoveBookButton mergedBookInfo={mergedBookInfo} />
                         }
-                        <IconButton aria-label="share">
-                            <ShareIcon />
-                        </IconButton>
                         <IconButton aria-label="show author details">
                             <Link to={`/authors/${authorKey}`}>
                                 <ShareIcon />
+                                see author details
                             </Link>
                         </IconButton>
                         <div>
