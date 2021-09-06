@@ -4,6 +4,8 @@ import { BookContext } from '../context/bookContext'
 import { List, ListItem } from '@material-ui/core'
 
 
+const flexContainer = { display: 'flex' }
+
 
 const AuthorBooksAll = () => {
 
@@ -16,8 +18,8 @@ const AuthorBooksAll = () => {
 
     return (
 
-        <List>
-            <div style={{ margin: 'auto' }}>
+        <List style={flexContainer}>
+            <div>
                 <h2>{`books by ${mergedAuthorInfo?.name}`}</h2>
                 {booksByTitle?.map((listitem, i) =>
                     <ListItem key={i} listitem={listitem}>

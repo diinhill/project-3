@@ -8,18 +8,16 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Collapse from '@material-ui/core/Collapse'
-import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import { red } from '@material-ui/core/colors'
 import AddIcon from '@material-ui/icons/Add'
-import ShareIcon from '@material-ui/icons/Share'
+import DetailsIcon from '@material-ui/icons/Details'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../context/authContext'
 import AddRemoveBookButton from './AddRemoveBookButton'
-import { UserListsContext } from '../context/userListsContext'
+
 
 
 
@@ -40,10 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
     expandOpen: {
         transform: 'rotate(180deg)',
-    },
-    avatar: {
-        backgroundColor: red[500],
-    },
+    }
 }))
 
 const flexContainer = { display: 'flex', flexDirection: 'column' }
@@ -78,11 +73,6 @@ const BookCard = () => {
             {mergedBookInfo ?
                 <Card className={classes.root}>
                     <CardHeader
-                        avatar={
-                            <Avatar aria-label="book" className={classes.avatar}>
-                                {mergedBookInfo?.subjects || mergedBookInfo?.subject}
-                            </Avatar>
-                        }
                         // action={
                         //     <IconButton aria-label="go to ia-page">
                         //         <Link href={`https://openlibrary.org/${workInfo?.key}`}>
@@ -94,7 +84,7 @@ const BookCard = () => {
                         subheader={`${mergedBookInfo?.first_publish_year}`}
                     />
 
-                    <CardMedia className={classes.media} title="book cover">
+                    <CardMedia className={classes.media} title='book cover'>
                         <img src={`https://covers.openlibrary.org/b/id/${mergedBookInfo?.cover_i}-L.jpg`} alt='' />
                     </CardMedia>
 
@@ -108,28 +98,25 @@ const BookCard = () => {
                     <CardActions disableSpacing>
                         {!user ?
                             <Link to={'/login'}>
-                                <IconButton aria-label="add to favourites" value="check">
+                                <IconButton aria-label='add favourite' value='check'>
                                     <AddIcon />
                                 </IconButton>
                             </Link>
                             :
                             <AddRemoveBookButton mergedBookInfo={mergedBookInfo} />
                         }
-                        <IconButton aria-label="show author details">
+                        <IconButton aria-label='author info' endIcon={<DetailsIcon />}>
                             <Link to={`/authors/${authorKey}`}>
-                                <ShareIcon />
                                 see author details
                             </Link>
                         </IconButton>
                         <div>
                             {mergedBookInfo?.description &&
                                 <IconButton
-                                    className={clsx(classes.expand, {
-                                        [classes.expandOpen]: expanded,
-                                    })}
+                                    className={clsx(classes.expand, { [classes.expandOpen]: expanded, })}
                                     onClick={handleExpandClick}
                                     aria-expanded={expanded}
-                                    aria-label="show more"
+                                    aria-label='show more'
                                 >
                                     <ExpandMoreIcon />
                                 </IconButton>
@@ -146,7 +133,8 @@ const BookCard = () => {
                         </CardContent>
                     </Collapse>
                 </Card>
-                : <h2>Loading...</h2>
+                :
+                <Typography>loading...</Typography>
             }
         </div>
     )

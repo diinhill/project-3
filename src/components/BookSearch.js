@@ -5,6 +5,10 @@ import debounce from 'lodash/debounce'
 import { useHistory } from 'react-router-dom'
 
 
+const flexContainer = { display: 'flex' }
+
+
+
 const BookSearch = () => {
 
     const history = useHistory()
@@ -59,6 +63,7 @@ const BookSearch = () => {
 
     return (
         <Autocomplete
+            style={flexContainer}
             key={resetInput}
             options={options}
             getOptionLabel={(option) => `${option.title} by ${option?.author_name}`}

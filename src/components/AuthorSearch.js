@@ -4,6 +4,9 @@ import TextField from '@material-ui/core/TextField'
 import debounce from 'lodash/debounce'
 import { useHistory } from 'react-router-dom'
 
+const flexContainer = { display: 'flex' }
+
+
 
 const AuthorSearch = () => {
 
@@ -55,6 +58,7 @@ const AuthorSearch = () => {
 
   return (
     <Autocomplete
+      style={flexContainer}
       key={resetInput}
       options={options}
       getOptionLabel={(option) => option.name}

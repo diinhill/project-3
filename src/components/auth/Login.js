@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/authContext'
 import { useHistory } from 'react-router-dom'
+import { Button, TextField, Typography } from '@material-ui/core'
 
 
 
@@ -8,7 +9,7 @@ const Login = () => {
 
     const history = useHistory()
     const [state, setState] = useState({ email: "", password: "" })
-    const { login } = useContext(AuthContext)
+    const { login/*, user*/ } = useContext(AuthContext)
 
 
     const handleChange = (e) => {
@@ -18,7 +19,6 @@ const Login = () => {
     const returnToPreviousPage = () => {
         /*!('/lists') ?*/ history.goBack() /*: history.push('/lists')*/
     }
-
     async function handleOnSubmit(event) {
         event.preventDefault()
         try {
@@ -29,19 +29,28 @@ const Login = () => {
         }
     }
 
+    // oder das hier ?
+    // const handleOnSubmit = (event) => {
+    //     event.preventDefault();
+    //     login(state)
+    // }
+    // useEffect(() => {
+    //     user && history.push("/profile")
+    // }, [history, user])
+
 
     return (
         <form onSubmit={handleOnSubmit}>
             <label>
-                <p>email</p>
-                <input type="email" name="email" onChange={handleChange} value={state.email} />
+                <Typography>email</Typography>
+                <TextField type="email" name="email" onChange={handleChange} value={state.email} />
             </label>
             <label>
-                <p>Password</p>
-                <input type="password" name="password" onChange={handleChange} value={state.password} />
+                <Typography>password</Typography>
+                <TextField type="password" name="password" onChange={handleChange} value={state.password} />
             </label>
             <div>
-                <button type="submit">Submit</button>
+                <Button variant='contained' color='default' disableElevation type='submit' /* href='#contained-buttons' */>submit</Button>
             </div>
         </form>
     )

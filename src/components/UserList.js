@@ -3,6 +3,8 @@ import { UserListsContext } from '../context/userListsContext'
 import { useParams } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { Typography } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 
 const flexContainer = { display: 'flex', flexDirection: 'column' }
 
@@ -33,7 +35,7 @@ const UserList = () => {
 
         <div style={flexContainer}>
 
-            <h2>{listId.nameOfList}</h2>
+            <Typography>{listId.nameOfList}</Typography>
 
             {booksFromUserlist ?
                 (booksFromUserlist.length !== 0) ?
@@ -42,9 +44,9 @@ const UserList = () => {
                             <div key={i}>
                                 <Link to={`/authors/${book?.author_key[0]}/books/${book?.cover_edition_key}`}>
                                     <Paper>
-                                        <h4>{book?.title}</h4>
-                                        <h6>{book?.author_name}</h6>
-                                        <h6>{book?.first_publish_year}</h6>
+                                        <Typography>{book?.title}</Typography>
+                                        <Typography>{book?.author_name}</Typography>
+                                        <Typography>{book?.first_publish_year}</Typography>
                                         <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-S.jpg`} alt='' />
                                     </Paper>
                                 </Link>
@@ -52,17 +54,17 @@ const UserList = () => {
                         )
                     })
 
-                    : <><p>you don't have any books in this list.</p>
+                    : <><Typography>you don't have any books in this list.</Typography>
                         <Link to={'/books'}>
-                            <button aria-label='find books to add to list'>add books</button>
+                            <Button aria-label='find books to add to list'>add books</Button>
                         </Link></>
 
-                : <h6>Loading...</h6>
+                : <Typography>loading...</Typography>
             }
 
             {!publicListId ?
-                <button aria-label='set list to public' onClick={() => handleListSettings()}>set list to public</button>
-                : <button aria-label='set list to private' onClick={() => handleListSettings()}>set list to private</button>}
+                <Button aria-label='set list to public' onClick={() => handleListSettings()}>set list to public</Button>
+                : <Button aria-label='set list to private' onClick={() => handleListSettings()}>set list to private</Button>}
 
         </div>
     )

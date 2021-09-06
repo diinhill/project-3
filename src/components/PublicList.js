@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
 import { useParams } from 'react-router-dom'
-import { Paper } from '@material-ui/core'
+import { Paper, Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import AddIcon from '@material-ui/icons/Add'
@@ -36,8 +36,7 @@ const UserList = () => {
     return (
 
         <div style={flexContainer}>
-
-            <h2>{publicListId.nameOfList}</h2>
+            <Typography>{publicListId.nameOfList}</Typography>
 
             {booksFromPublicList ?
                 (booksFromPublicList.length !== 0) ?
@@ -46,9 +45,9 @@ const UserList = () => {
                             <div key={i}>
                                 <Link to={`/authors/${book?.author_key[0]}/books/${book?.cover_edition_key}`}>
                                     <Paper>
-                                        <h4>{book?.title}</h4>
-                                        <h6>{book?.author_name}</h6>
-                                        <h6>{book?.first_publish_year}</h6>
+                                        <Typography>{book?.title}</Typography>
+                                        <Typography>{book?.author_name}</Typography>
+                                        <Typography>{book?.first_publish_year}</Typography>
                                         <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-S.jpg`} alt='' />
                                     </Paper>
                                 </Link>
@@ -56,9 +55,9 @@ const UserList = () => {
                         )
                     })
 
-                    : <p>ha! this seems to be an empty list.</p> && history.goBack()
+                    : <Typography>ha! this seems to be an empty list.</Typography> && history.goBack()
 
-                : <h6>Loading...</h6>
+                : <Typography>loading...</Typography>
             }
 
             {booksFromPublicList &&

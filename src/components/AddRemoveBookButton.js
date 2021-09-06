@@ -9,6 +9,8 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Link } from 'react-router-dom'
 
 
+const flexContainer = { display: 'flex' }
+
 
 
 const AddRemoveBookButton = ({ mergedBookInfo }) => {
@@ -53,7 +55,7 @@ const AddRemoveBookButton = ({ mergedBookInfo }) => {
 
     return (
 
-        <div>
+        <div style={flexContainer}>
             {listsIncludingThisBook &&
                 (listsIncludingThisBook.length === 0) ?
                 <div>

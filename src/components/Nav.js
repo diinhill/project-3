@@ -8,7 +8,8 @@ import { makeStyles, withStyles } from "@material-ui/core/styles"
 import MuiLink from "@material-ui/core/Link"
 import Typography from "@material-ui/core/Typography"
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined'
-import BrightnessMediumOutlinedIcon from '@material-ui/icons/BrightnessMediumOutlined';
+import BrightnessMediumOutlinedIcon from '@material-ui/icons/BrightnessMediumOutlined'
+import { Button, TextField } from '@material-ui/core'
 
 
 
@@ -54,39 +55,57 @@ function Nav() {
 
 
         <nav style={flexContainer}>
-            <button onClick={handleClick}>
-                <BrightnessMediumOutlinedIcon />
-            </button>
-            {/* <button onClick={() => history.goBack()}> */}
+            <BrightnessMediumOutlinedIcon style={{ color: 'darkblue' }} onClick={handleClick} />
             <ArrowBackOutlinedIcon style={{ color: 'darkblue' }} onClick={() => history.goBack()} />
-            {/* </button> */}
-            <p style={{ display: 'flex' }}>{user ? `logged in as ${user.displayName}` : ""}</p>
-            <Typography className={classes.root}>
+            <Typography style={{ display: 'flex' }}>{user ? `${user.displayName}` : ""}</Typography>
+            <Typography variant='h3' component='h6' color='default' className={classes.root}>
                 <ul style={{ justifyContent: 'center', marginBottom: '5px' }}>
                     <li>
-                        <Link to="/">Home</Link>
+                        <Button>
+                            <Link to="/">Home</Link>
+                        </Button>
                     </li>
                     <li>
-                        <Link to="/authors">Authors</Link>
+                        <Button>
+                            <Link to="/authors">Authors</Link>
+                        </Button>
                     </li>
                     <li>
-                        <Link to="/books">Books</Link>
+                        <Button>
+                            <Link to="/books">Books</Link>
+                        </Button>
                     </li>
                     <li>
-                        <Link to="/lists/public">Lists</Link>
+                        <Button>
+                            <Link to="/lists/public">Lists</Link>
+                        </Button>
                     </li>
                     <li>
-                        {!user ? <Link to="/login">Login</Link>
-                            : <Logout />}
+                        {!user ?
+                            <Button>
+                                <Link to="/login">Login</Link>
+                            </Button>
+                            :
+                            <Button>
+                                <Logout />
+                            </Button>
+                        }
                     </li>
                     <li>
-                        {!user ? <Link to="/register">Register</Link>
-                            : <MuiLink component="button" disabled onClick={() =>
-                                console.log("I'm disabled so this doesn't appear in the console when this is clicked.")}>Register
-                            </MuiLink>}
+                        {!user ?
+                            <Button>
+                                <Link to="/register">Register</Link>
+                            </Button>
+                            :
+                            <Button>
+                                <MuiLink component="button" disabled>Register</MuiLink>
+                            </Button>
+                        }
                     </li>
                     <li>
-                        <Link to="/lists">My Lists</Link>
+                        <Button>
+                            <Link to="/lists">My Lists</Link>
+                        </Button>
                     </li>
                 </ul>
             </Typography >

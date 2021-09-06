@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
-import { Paper } from '@material-ui/core'
+import { Paper, TextField, Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import RemoveIcon from '@material-ui/icons/Remove'
+import { Button } from '@material-ui/core'
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight'
 
 const flexContainer = { display: 'flex', flexDirection: 'column' }
 
@@ -39,11 +41,10 @@ const UserLists = () => {
     return (
 
         <div style={flexContainer} >
+            <Typography variant='h2' color='default' component='h4' align='center'>User Lists</Typography>
 
-            <h2>User Lists</h2>
-
-            <input type="text" placeholder='name of new list' value={body} onChange={handleOnChange} />
-            <button onClick={handleCreateNewList} >create new list</button>
+            <TextField type="text" placeholder='name of new list' value={body} onChange={handleOnChange} />
+            <Button variant='contained' onClick={handleCreateNewList} type='submit' endIcon={<KeyboardArrowRightIcon />}>create new list</Button>
 
             {userlists ?
                 userlists.map((list, i) => {
@@ -62,9 +63,8 @@ const UserLists = () => {
                         </div>
                     )
                 })
-                : <h2>Loading...</h2>
+                : <Typography>loading...</Typography>
             }
-
         </div>
     )
 }

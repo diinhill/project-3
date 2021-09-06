@@ -20,11 +20,10 @@ import {
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Logout from './components/auth/Logout'
-import { NewBooksContextProvider } from './context/newBooksContext'
 import { BookContextProvider } from './context/bookContext'
 import { AuthContextProvider, AuthContext } from './context/authContext'
 import { UserListsContextProvider } from './context/userListsContext'
-import { ThemeProvider } from './context/themeContext'
+import { ThemeContextProvider } from './context/themeContext'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -47,10 +46,10 @@ function App() {
   return (
 
     <div className='App'>
-      <AuthContextProvider>
-        <Router>
-          <Nav />
-          <NewBooksContextProvider>
+      <ThemeContextProvider>
+        <AuthContextProvider>
+          <Router>
+            <Nav />
             <BookContextProvider>
               <UserListsContextProvider>
                 <Switch>
@@ -92,9 +91,9 @@ function App() {
                 </Switch>
               </UserListsContextProvider>
             </BookContextProvider>
-          </NewBooksContextProvider>
-        </Router>
-      </AuthContextProvider>
+          </Router>
+        </AuthContextProvider>
+      </ThemeContextProvider>
     </div>
   )
 }

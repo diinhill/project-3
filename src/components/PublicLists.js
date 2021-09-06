@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
-import { Paper } from '@material-ui/core'
+import { Paper, Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 
@@ -24,8 +24,7 @@ const PublicLists = () => {
     return (
 
         <div style={flexContainer} >
-
-            <h2>Public Lists</h2>
+            <Typography>Public Lists</Typography>
 
             {publicLists ?
                 publicLists.map((list, i) => {
@@ -33,16 +32,16 @@ const PublicLists = () => {
                         <div key={i}>
                             <Link to={`/lists/public/${list?.listIdPublic}`}>
                                 <Paper>
-                                    <h4>{list?.nameOfList}</h4>
-                                    <h6>{((list?.listUpdatedOnDate).toDate().toLocaleString('en').substring(0, 14))}</h6>
-                                    <h6>{list?.nameOfUser}</h6>
-                                    <h6>{list?.numberOfBooks}</h6>
+                                    <Typography>{list?.nameOfList}</Typography>
+                                    <Typography>{((list?.listUpdatedOnDate).toDate().toLocaleString('en').substring(0, 14))}</Typography>
+                                    <Typography>{list?.nameOfUser}</Typography>
+                                    <Typography>{list?.numberOfBooks}</Typography>
                                 </Paper>
                             </Link>
                         </div>
                     )
                 })
-                : <h2>Loading...</h2>
+                : <Typography>loading...</Typography>
             }
 
         </div>
