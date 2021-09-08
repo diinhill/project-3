@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../context/authContext'
 import AddRemoveBookButton from './AddRemoveBookButton'
-
+import ImgThemedAppBar from './ImgThemedAppBar'
 
 
 
@@ -54,11 +54,16 @@ const BookCard = () => {
 
     const classes = useStyles()
     const [expanded, setExpanded] = useState(false)
+    const [book, setBook] = useState()
 
 
     useEffect(() => {
         getMergedBookInfoController(bookKey)
     }, [bookKey])
+
+    useEffect(() => {
+        setBook(mergedBookInfo)
+    }, [mergedBookInfo])
 
     console.log('mergedBookInfo:', mergedBookInfo)
 
@@ -70,7 +75,7 @@ const BookCard = () => {
     return (
 
         <div style={flexContainer}>
-            {mergedBookInfo ?
+            {book ?
                 <Card className={classes.root}>
                     <CardHeader
                         // action={
@@ -80,12 +85,14 @@ const BookCard = () => {
                         //         </Link>
                         //     </IconButton>
                         // }
-                        title={mergedBookInfo?.title}
-                        subheader={`${mergedBookInfo?.first_publish_year}`}
+
+                        title={<Typography variant="h5" color="inherit">{book?.title}</Typography>}
+                        subheader={<Typography variant="body1" color="inherit">{book?.first_publish_year}</Typography>}
                     />
 
                     <CardMedia className={classes.media} title='book cover'>
-                        <img src={`https://covers.openlibrary.org/b/id/${mergedBookInfo?.cover_i}-L.jpg`} alt='' />
+                        <ImgThemedAppBar imgSrc={`https://covers.openlibrary.org/b/id/${book?.cover_i}-L.jpg`} />
+                        {/* <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-L.jpg`} alt='' /> */}
                     </CardMedia>
 
                     {/* <CardContent>
@@ -111,7 +118,7 @@ const BookCard = () => {
                             </Link>
                         </IconButton>
                         <div>
-                            {mergedBookInfo?.description &&
+                            {book?.description &&
                                 <IconButton
                                     className={clsx(classes.expand, { [classes.expandOpen]: expanded, })}
                                     onClick={handleExpandClick}
@@ -128,7 +135,7 @@ const BookCard = () => {
                         <CardContent>
                             {/* <Typography paragraph>Method:</Typography> */}
                             <Typography paragraph>
-                                {mergedBookInfo?.description?.value || mergedBookInfo?.description}
+                                {book?.description?.value || book?.description}
                             </Typography>
                         </CardContent>
                     </Collapse>

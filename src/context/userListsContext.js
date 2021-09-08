@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react'
 import firebase from '../config'
 import { AuthContext } from './authContext'
+import firebaseApp from "firebase/app"
 
 const db = firebase.firestore()
 
@@ -12,10 +13,10 @@ export const UserListsContextProvider = ({ children }) => {
 
     const { user } = useContext(AuthContext)
     const [userlists, setUserlists] = useState([])
-    const [booksFromUserlist, setBooksFromUserlist] = useState([])
+    const [userList, setUserList] = useState([])
     const [listsIncludingThisBook, setListsIncludingThisBook] = useState([])
     const [publicLists, setPublicLists] = useState([])
-    const [booksFromPublicList, setBooksFromPublicList] = useState([])
+    const [booksFromPublicList, setBooksFromPublicList] = useState()
 
 
 
@@ -30,80 +31,95 @@ export const UserListsContextProvider = ({ children }) => {
     }
 
     const createOrAddBookToUserlistController = (listname, listid, mergedbookinfo) => {
-        let randomListId = ''
-        !listid && (randomListId = createRandomListId())
-        listid && mergedbookinfo ?
-            (db.collection(`user/${user.uid}/userlists/${listid}/books`).doc(mergedbookinfo.title).set(mergedbookinfo)
-                .then(() => {
-                    console.log(`document successfully written for: bookObject ${mergedbookinfo.title}`)
-                    getUserlists()
-                    getBooksFromUserlist(listid)
-                })
-                .catch((error) => {
-                    console.error(`error adding document for: bookObject ${mergedbookinfo.title}`, error)
-                })
-                &&
-                db.collection(`user/${user.uid}/userlists`).doc(listid).set({
-                    listId: listid,
-                    nameOfList: listname,
-                    nameOfUser: user.displayName,
-                    numberOfBooks: booksFromUserlist.length + 1,
-                    listUpdatedOnDate: new Date()
-                })
-                    .then(() => {
-                        console.log(`document successfully written for: userlist ${listname}`)
-                        // getUserlists()
-                    })
-                    .catch((error) => {
-                        console.error(`error adding document for: userlist ${listname}`, error)
-                    }))
-            :
-            randomListId &&
-            db.collection(`user/${user.uid}/userlists`).doc(randomListId).set({
-                listId: randomListId,
-                nameOfList: listname,
-                nameOfUser: user.displayName,
-                numberOfBooks: 0,
+        console.log(`listId`, listid)
+        if (listid) {
+            // (db.collection(`user/${user.uid}/userlists/${listid}/books`).doc(mergedbookinfo.title).set(mergedbookinfo)
+            //     .then(() => {
+            //         console.log(`document successfully written for: bookObject ${mergedbookinfo.title}`)
+            //         getUserlists()
+            //         getUserlist(listid)
+            //     })
+            //     .catch((error) => {
+            //         console.error(`error adding document for: bookObject ${mergedbookinfo.title}`, error)
+            //     })
+            //     &&
+            addRemovePublicListBook(listid, mergedbookinfo, true)
+
+            db.collection(`user/${user.uid}/userlists`).doc(listid).update({
+                // listId: listid,
+                books: firebaseApp.firestore.FieldValue.arrayUnion(mergedbookinfo),
+                // nameOfList: listname,
+                // nameOfUser: user.displayName,
+                numberOfBooks: firebaseApp.firestore.FieldValue.increment(1),
                 listUpdatedOnDate: new Date()
             })
                 .then(() => {
                     console.log(`document successfully written for: userlist ${listname}`)
+                    // getUserlists()
+
+                })
+                .catch((error) => {
+                    console.error(`error adding document for: userlist ${listname}`, error)
+                })
+        }
+        else {
+            const randomId = createRandomListId()
+            db.collection(`user/${user.uid}/userlists`).doc(randomId).set({
+                books: mergedbookinfo ? [mergedbookinfo] : [],
+                private: true,
+                listId: randomId,
+                nameOfList: listname,
+                nameOfUser: user.displayName,
+                userUid: user.uid,
+                numberOfBooks: mergedbookinfo ? 1 : 0,
+                listUpdatedOnDate: new Date()
+            })
+                .then(() => {
+                    console.log(`document successfully written for: userlist ${listname}`)
+
                     getUserlists()
                 })
                 .catch((error) => {
                     console.error(`error adding document for: userlist ${listname}`, error)
                 })
+        }
+
     }
 
     const removeBookFromList = (listname, listid, mergedbookinfo) => {
-        db.collection(`user/${user.uid}/userlists/${listid}/books`).doc(mergedbookinfo.title).delete(mergedbookinfo)
+        // db.collection(`user/${user.uid}/userlists/${listid}/books`).doc(mergedbookinfo.title).delete(mergedbookinfo)
+        //     .then(() => {
+        //         console.log(`document successfully deleted for: bookObject ${mergedbookinfo.title}`)
+        //         getUserlist(listid)
+        //     })
+        //     .catch((error) => {
+        //         console.error(`error removing document for: bookObject ${mergedbookinfo.title}`, error)
+        //     })
+        //     &&
+        console.log(`listid`, listid)
+        console.log(`mergboo`, mergedbookinfo)
+        addRemovePublicListBook(listid, mergedbookinfo, false)
+
+        db.collection(`user`).doc(user.uid).collection(`userlists`).doc(listid).update({
+            books: firebaseApp.firestore.FieldValue.arrayRemove(mergedbookinfo),
+            // listId: listid,
+            // nameOfList: listname,
+            // nameOfUser: user.displayName,
+            numberOfBooks: firebaseApp.firestore.FieldValue.increment(-1),
+            listUpdatedOnDate: new Date()
+        })
             .then(() => {
-                console.log(`document successfully deleted for: bookObject ${mergedbookinfo.title}`)
-                getBooksFromUserlist(listid)
+                console.log(`document successfully updated for: userlist ${listname}`)
+                getUserlists()
             })
             .catch((error) => {
-                console.error(`error removing document for: bookObject ${mergedbookinfo.title}`, error)
+                console.error(`error updating document for: userlist ${listname}`, error)
             })
-            &&
-            db.collection(`user/${user.uid}/userlists`).doc(listid).set({
-                listId: listid,
-                nameOfList: listname,
-                nameOfUser: user.displayName,
-                numberOfBooks: booksFromUserlist.length - 1,
-                listUpdatedOnDate: new Date()
-            })
-                .then(() => {
-                    console.log(`document successfully updated for: userlist ${listname}`)
-                    getUserlists()
-                })
-                .catch((error) => {
-                    console.error(`error updating document for: userlist ${listname}`, error)
-                })
     }
 
     const deleteUserlist = async (list) => {
-        const booksFromUserlist = await getBooksFromUserlist(list.listId)
-        booksFromUserlist?.map((book) =>
+        const userlist = await getUserlist(list.listId)
+        userlist.books?.map((book) =>
             db.collection(`user/${user.uid}/userlists/${list.listId}/books`).doc(book.title).delete(book)
                 .then(() => {
                     console.log(`document successfully deleted for: bookObject ${book.title}`)
@@ -132,52 +148,76 @@ export const UserListsContextProvider = ({ children }) => {
         setUserlists(lists)
         return lists
     }
-
-    const getBooksFromUserlist = async (listId) => {
-        const booksFromList = []
-        await db.collection(`user/${user.uid}/userlists/${listId}/books`).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                booksFromList.push(doc.data())
-            })
-            // console.log('booksFromUserlist:', booksFromList)
-        })
-        setBooksFromUserlist(booksFromList)
-        return booksFromList
+    const getUserListById = async (listId) => {
+        const list = await db.collection(`user`).doc(user.uid).collection(`userlists`).doc(listId).get().then((doc) =>
+            doc.data())
+        return list
     }
 
+    const getUserlist = async (listId) => {
+        console.log(`listId`, listId)
+        var booksListRef = db.collection(`user`).doc(user.uid).collection("userlists").doc(listId);
+        try {
+            const bookListDoc = await booksListRef.get();
+            const bookList = bookListDoc.data()
+            console.log(`bookList`, bookList)
+            setUserList(bookList)
+            return bookList
+        }
+        catch (err) {
+            console.log('Error getting documents', err);
+        }
+        // const booksFromList = await .get().then((doc) => {
+        //     setBooksFromUserlist(doc.data()?.books)
+
+        // })
+    }
+
+
     const getListsIncludingThisBook = async (mergedbookinfo) => {
-        const listsIncludingThisBook = []
+
         const lists = await getUserlists()
-        lists.forEach(async (list) => {
-            const booksFromList = await getBooksFromUserlist(list.listId)
-            booksFromList.forEach((item) => {
-                if (item.title === mergedbookinfo.title) {
-                    console.log('bookObject found in this list:', list.nameOfList)
-                    listsIncludingThisBook.push(list)
-                }
-                else {
-                    // console.log('bookObject not found in this list:', list)
-                }
-            })
+        console.log(`lists`, lists)
+
+        const listsIncludingThisBook = lists.filter(list => {
+
+            return list.books.filter(book => book.title === mergedbookinfo.title).length > 0
+
         })
+        console.log(`listsIncludingThisBook`, listsIncludingThisBook)
+        // const listsIncludingThisBook = lists.filter(list => {
+        //     return list.books.length && list.books.filter(book => book.title === mergedbookinfo.title)
+        // })
+        // console.log(`listsIncludingThisBook`, listsIncludingThisBook)
+
+        // const booksFromList = await getUserlist(list.listId)
+        // console.log(`booksFromList`, booksFromList)
+        // booksFromList.forEach((item) => {
+        //     if (item.title === mergedbookinfo.title) {
+        //         console.log('bookObject found in this list:', list.nameOfList)
+        //         listsIncludingThisBook.push(list)
+        //     }
+        //     else {
+        //         // console.log('bookObject not found in this list:', list)
+        //     }
+        // })
+        // })
         // console.log('userlistsIncludingThisBook:', userlistsIncludingThisBook)
         setListsIncludingThisBook(listsIncludingThisBook)
         return listsIncludingThisBook
     }
 
-    const getPublicListId = async (listid) => {
+    const setPublicList = async (listid) => {
         console.log('listid:', listid)
-        let randomListId = createRandomListId()
-        const lists = await getUserlists()
-        console.log('lists:', lists)
-        let list = lists?.filter((listitem) => (listitem?.listId === listid))[0]
+        // const lists = await getUserlists()
+        // console.log('lists:', lists)
+        // let list = lists?.find((listitem) => (listitem?.listId === listid))
+        const list = await getUserListById(listid)
         console.log('list:', list)
-        const booksFromUserlist = await getBooksFromUserlist(listid)
-        list && db.collection(`lists/`).doc(randomListId).set({
-            listIdPublic: randomListId,
-            nameOfList: list?.nameOfList,
-            nameOfUser: user.displayName,
-            numberOfBooks: booksFromUserlist.length,
+        getUserlist(listid)
+        list && db.collection(`lists/`).doc(`${user.uid}-${listid}`).set({
+            ...list,
+            private: false,
             listUpdatedOnDate: new Date()
         })
             .then(() => {
@@ -186,37 +226,70 @@ export const UserListsContextProvider = ({ children }) => {
             .catch((error) => {
                 console.error(`error adding document in public lists for: userlist ${list.nameOfList}`, error)
             })
-        booksFromUserlist?.map((book) =>
-            db.collection(`lists/${randomListId}/books`).doc(book.title).set(book)
-                .then(() => {
-                    console.log(`document successfully written in public list for: bookObject ${book.title}`)
-                })
-                .catch((error) => {
-                    console.error(`error adding document in public list for: bookObject ${book.title}`, error)
-                })
-        )
-        return randomListId
-    }
-
-    const deletePublicListId = async (publicListId, listId) => {
-        const booksFromUserlist = await getBooksFromUserlist(listId)
-        booksFromUserlist?.map((book) =>
-            db.collection(`lists/${publicListId}/books`).doc(book.title).delete(book)
-                .then(() => {
-                    console.log(`document successfully deleted in public list for: bookObject ${book.title}`)
-                })
-                .catch((error) => {
-                    console.error(`error removing document from public list for: bookObject ${book.title}`, error)
-                })
-        )
-        db.collection(`lists/`).doc(publicListId).delete(listId)
+        db.collection(`user/${user.uid}/userlists`).doc(listid).update({
+            private: false
+        })
             .then(() => {
-                console.log(`document successfully deleted from public lists for: userlist ${listId.nameOfList}`)
+                console.log(`document successfully written for: userlist ${listid}`)
+                // getUserlists()
             })
             .catch((error) => {
-                console.error(`error deleting from public lists for: userlist ${listId.nameOfList}`, error)
+                console.error(`error adding document for: userlist ${listid}`, error)
             })
-        return null
+    }
+    const addRemovePublicListBook = async (listid, mergedbookinfo, add) => {
+        console.log('mergedbookinfo:', mergedbookinfo)
+        // const lists = await getUserlists()
+        // console.log('lists:', lists)
+        // let list = lists?.find((listitem) => (listitem?.listId === listid))
+        const list = await getUserListById(listid)
+        console.log('list:', list)
+        if (!list.private)
+            db.collection(`lists`).doc(`${user.uid}-${listid}`).update({
+                books: add ? firebaseApp.firestore.FieldValue.arrayUnion(mergedbookinfo) : firebaseApp.firestore.FieldValue.arrayRemove(mergedbookinfo),
+                numberOfBooks: add ? firebaseApp.firestore.FieldValue.increment(1) : firebaseApp.firestore.FieldValue.increment(-1),
+                listUpdatedOnDate: new Date()
+            })
+                .then(() => {
+                    console.log(`document successfully written in public lists for: userlist ${list.nameOfList}`)
+                    getPublicLists()
+                })
+                .catch((error) => {
+                    console.error(`error adding document in public lists for: userlist ${list.nameOfList}`, error)
+                })
+        //     db.collection(`user/${user.uid}/userlists`).doc(listid).update({
+        //         private: false
+        //     })
+        //         .then(() => {
+        //             console.log(`document successfully written for: userlist ${listid}`)
+        //             // getUserlists()
+        //         })
+        //         .catch((error) => {
+        //             console.error(`error adding document for: userlist ${listid}`, error)
+        //         })
+    }
+
+    const deletePublicList = async (listid) => {
+        const list = await getUserListById(listid)
+        console.log('list:', list)
+        getUserlist(listid)
+        list && db.collection(`lists`).doc(`${user.uid}-${listid}`).delete()
+            .then(() => {
+                console.log(`document successfullydeleted public list: ${list.nameOfList}`)
+            })
+            .catch((error) => {
+                console.error(`error adding document in public lists for: userlist ${list.nameOfList}`, error)
+            })
+        db.collection(`user/${user.uid}/userlists`).doc(listid).update({
+            private: true
+        })
+            .then(() => {
+                console.log(`document successfully written for: userlist ${listid}`)
+                // getUserlists()
+            })
+            .catch((error) => {
+                console.error(`error adding document for: userlist ${listid}`, error)
+            })
     }
 
     const getPublicLists = async () => {
@@ -232,48 +305,45 @@ export const UserListsContextProvider = ({ children }) => {
     }
 
     const getBooksFromPublicList = async (publicListId) => {
-        const booksFromList = []
-        await db.collection(`lists/${publicListId}/books`).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                booksFromList.push(doc.data())
-            })
-            // console.log('booksFromUserlist:', booksFromList)
+        console.log(`object`, publicListId)
+        db.collection(`lists`).doc(publicListId).get().then((doc) => {
+            console.log(`doc.data()`, doc.data())
+            setBooksFromPublicList(doc.data())
         })
-        setBooksFromPublicList(booksFromList)
-        return booksFromList
     }
 
-    const getPrivateListId = async (publicListId) => {
-        console.log('listid:', publicListId)
-        let randomListId = createRandomListId()
-        const lists = await getPublicLists()
-        console.log('lists:', lists)
-        let list = lists?.filter((listitem) => (listitem?.publicListId === publicListId))[0]
-        console.log('list:', list)
-        const booksFromPublicList = await getBooksFromPublicList(publicListId)
-        list && db.collection(`user/${user.uid}/userlists/`).doc(randomListId).set({
-            listId: randomListId,
-            nameOfList: list?.nameOfList,
-            nameOfUser: user.displayName,
-            numberOfBooks: booksFromUserlist.length,
-            listUpdatedOnDate: new Date()
-        })
-            .then(() => {
-                console.log(`document successfully written in public lists for: userlist ${list.nameOfList}`)
-            })
-            .catch((error) => {
-                console.error(`error adding document in public lists for: userlist ${list.nameOfList}`, error)
-            })
-        booksFromPublicList?.map((book) =>
-            db.collection(`user/${user.uid}/userlists/${randomListId}/books`).doc(book.title).set(book)
-                .then(() => {
-                    console.log(`document successfully written in public list for: bookObject ${book.title}`)
-                })
-                .catch((error) => {
-                    console.error(`error adding document in public list for: bookObject ${book.title}`, error)
-                })
-        )
-        return randomListId
+
+    const copyPubliclistToMyList = async (publicListId) => {
+        // console.log('listid:', publicListId)
+        // let randomListId = createRandomListId()
+        // const lists = await getPublicLists()
+        // console.log('lists:', lists)
+        // let list = lists?.filter((listitem) => (listitem?.publicListId === publicListId))[0]
+        // console.log('list:', list)
+        // const booksFromPublicList = await getBooksFromPublicList(publicListId)
+        // list && db.collection(`user/${user.uid}/userlists/`).doc(randomListId).set({
+        //     listId: randomListId,
+        //     nameOfList: list?.nameOfList,
+        //     nameOfUser: user.displayName,
+        //     numberOfBooks: booksFromUserlist.length,
+        //     listUpdatedOnDate: new Date()
+        // })
+        //     .then(() => {
+        //         console.log(`document successfully written in public lists for: userlist ${list.nameOfList}`)
+        //     })
+        //     .catch((error) => {
+        //         console.error(`error adding document in public lists for: userlist ${list.nameOfList}`, error)
+        //     })
+        // booksFromPublicList?.map((book) =>
+        //     db.collection(`user/${user.uid}/userlists/${randomListId}/books`).doc(book.title).set(book)
+        //         .then(() => {
+        //             console.log(`document successfully written in public list for: bookObject ${book.title}`)
+        //         })
+        //         .catch((error) => {
+        //             console.error(`error adding document in public list for: bookObject ${book.title}`, error)
+        //         })
+        // )
+        // return randomListId
     }
 
 
@@ -281,9 +351,9 @@ export const UserListsContextProvider = ({ children }) => {
 
     return (
         <UserListsContext.Provider value={{
-            userlists, getUserlists, deleteUserlist, booksFromUserlist, getBooksFromUserlist, createOrAddBookToUserlistController,
-            removeBookFromList, listsIncludingThisBook, getListsIncludingThisBook, getPublicListId, deletePublicListId,
-            publicLists, getPublicLists, booksFromPublicList, getBooksFromPublicList, getPrivateListId
+            userlists, getUserlists, deleteUserlist, userList, getUserlist, createOrAddBookToUserlistController,
+            removeBookFromList, listsIncludingThisBook, getListsIncludingThisBook, setPublicList, deletePublicList,
+            publicLists, getPublicLists, booksFromPublicList, getBooksFromPublicList, copyPubliclistToMyList
         }}>
             {children}
         </UserListsContext.Provider>

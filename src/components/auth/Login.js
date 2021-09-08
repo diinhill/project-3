@@ -1,15 +1,25 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/authContext'
 import { useHistory } from 'react-router-dom'
-import { Button, TextField, Typography } from '@material-ui/core'
+import { Button, TextField, Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 
+
+const useStyles = makeStyles({
+    field: {
+        display: 'blocks',
+        marginBottom: 20,
+        marginTop: 20,
+    }
+})
 
 
 const Login = () => {
 
+    const classes = useStyles()
     const history = useHistory()
-    const [state, setState] = useState({ email: "", password: "" })
-    const { login/*, user*/ } = useContext(AuthContext)
+    const [state, setState] = useState({ email: '', password: '' })
+    const { login } = useContext(AuthContext)
 
 
     const handleChange = (e) => {
@@ -29,30 +39,22 @@ const Login = () => {
         }
     }
 
-    // oder das hier ?
-    // const handleOnSubmit = (event) => {
-    //     event.preventDefault();
-    //     login(state)
-    // }
-    // useEffect(() => {
-    //     user && history.push("/profile")
-    // }, [history, user])
-
 
     return (
-        <form onSubmit={handleOnSubmit}>
-            <label>
-                <Typography>email</Typography>
-                <TextField type="email" name="email" onChange={handleChange} value={state.email} />
-            </label>
-            <label>
-                <Typography>password</Typography>
-                <TextField type="password" name="password" onChange={handleChange} value={state.password} />
-            </label>
-            <div>
-                <Button variant='contained' color='default' disableElevation type='submit' /* href='#contained-buttons' */>submit</Button>
-            </div>
-        </form>
+
+        <Container>
+            <form onSubmit={handleOnSubmit}>
+                <label>
+                    <TextField className={classes.field} fullWidth variant='outlined' required label='email' type='email' name='email' onChange={handleChange} value={state.email} />
+                </label>
+                <label>
+                    <TextField className={classes.field} fullWidth variant='outlined' required label='password' type='password' name='password' onChange={handleChange} value={state.password} />
+                </label>
+                <div>
+                    <Button className={classes.field} variant='contained' /*color='default'*/ /*disableElevation*/ type='submit' /* href='#contained-buttons' */>submit</Button>
+                </div>
+            </form>
+        </Container>
     )
 }
 

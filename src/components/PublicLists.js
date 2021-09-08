@@ -1,15 +1,22 @@
 import React, { useContext, useEffect } from 'react'
 import { UserListsContext } from '../context/userListsContext'
-import { Paper, Typography } from '@material-ui/core'
+import { Container, Paper, Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { makeStyles } from '@material-ui/styles'
 
 
-const flexContainer = { display: 'flex', flexDirection: 'column' }
-
+const useStyles = makeStyles({
+    field: {
+        display: 'blocks',
+        marginBottom: 20,
+        marginTop: 20,
+    }
+})
 
 
 const PublicLists = () => {
 
+    const classes = useStyles()
     const { publicLists, getPublicLists } = useContext(UserListsContext)
 
 
@@ -23,14 +30,14 @@ const PublicLists = () => {
 
     return (
 
-        <div style={flexContainer} >
+        <Container>
             <Typography>Public Lists</Typography>
 
             {publicLists ?
                 publicLists.map((list, i) => {
                     return (
-                        <div key={i}>
-                            <Link to={`/lists/public/${list?.listIdPublic}`}>
+                        <div className={classes.field} key={i}>
+                            <Link to={`/lists/public/${list.userUid}-${list?.listId}`}>
                                 <Paper>
                                     <Typography>{list?.nameOfList}</Typography>
                                     <Typography>{((list?.listUpdatedOnDate).toDate().toLocaleString('en').substring(0, 14))}</Typography>
@@ -44,7 +51,7 @@ const PublicLists = () => {
                 : <Typography>loading...</Typography>
             }
 
-        </div>
+        </Container>
     )
 }
 

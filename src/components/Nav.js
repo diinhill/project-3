@@ -9,7 +9,7 @@ import MuiLink from "@material-ui/core/Link"
 import Typography from "@material-ui/core/Typography"
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined'
 import BrightnessMediumOutlinedIcon from '@material-ui/icons/BrightnessMediumOutlined'
-import { Button, TextField } from '@material-ui/core'
+import { Button, TextField, Grid, Container } from '@material-ui/core'
 
 
 
@@ -53,63 +53,80 @@ function Nav() {
 
     return (
 
+        <Container>
+            <nav>
+                <BrightnessMediumOutlinedIcon style={{ color: 'darkblue' }} onClick={handleClick} />
+                <ArrowBackOutlinedIcon style={{ color: 'darkblue' }} onClick={() => history.goBack()} />
+                <Typography>{user ? `${user.displayName}` : ''}</Typography>
 
-        <nav style={flexContainer}>
-            <BrightnessMediumOutlinedIcon style={{ color: 'darkblue' }} onClick={handleClick} />
-            <ArrowBackOutlinedIcon style={{ color: 'darkblue' }} onClick={() => history.goBack()} />
-            <Typography style={{ display: 'flex' }}>{user ? `${user.displayName}` : ""}</Typography>
-            <Typography variant='h3' component='h6' color='default' className={classes.root}>
-                <ul style={{ justifyContent: 'center', marginBottom: '5px' }}>
-                    <li>
-                        <Button>
-                            <Link to="/">Home</Link>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button>
-                            <Link to="/authors">Authors</Link>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button>
-                            <Link to="/books">Books</Link>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button>
-                            <Link to="/lists/public">Lists</Link>
-                        </Button>
-                    </li>
-                    <li>
-                        {!user ?
-                            <Button>
-                                <Link to="/login">Login</Link>
-                            </Button>
-                            :
-                            <Button>
-                                <Logout />
-                            </Button>
-                        }
-                    </li>
-                    <li>
-                        {!user ?
-                            <Button>
-                                <Link to="/register">Register</Link>
-                            </Button>
-                            :
-                            <Button>
-                                <MuiLink component="button" disabled>Register</MuiLink>
-                            </Button>
-                        }
-                    </li>
-                    <li>
-                        <Button>
-                            <Link to="/lists">My Lists</Link>
-                        </Button>
-                    </li>
-                </ul>
-            </Typography >
-        </nav >
+                <Grid container>
+                    <ul>
+                        <Grid item>
+                            <li>
+                                <Button>
+                                    <Link to="/">Home</Link>
+                                </Button>
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                <Button>
+                                    <Link to="/authors">Authors</Link>
+                                </Button>
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                <Button>
+                                    <Link to="/books">Books</Link>
+                                </Button>
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                <Button>
+                                    <Link to="/lists/public">Lists</Link>
+                                </Button>
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                {!user ?
+                                    <Button>
+                                        <Link to="/login">Login</Link>
+                                    </Button>
+                                    :
+                                    <Button>
+                                        <Logout />
+                                    </Button>
+                                }
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                {!user ?
+                                    <Button>
+                                        <Link to="/register">Register</Link>
+                                    </Button>
+                                    :
+                                    <Button>
+                                        <MuiLink component="button" disabled>Register</MuiLink>
+                                    </Button>
+                                }
+                            </li>
+                        </ Grid>
+                        <Grid item>
+                            <li>
+                                <Button>
+                                    <Link to="/lists">My Lists</Link>
+                                </Button>
+                            </li>
+                        </ Grid>
+                    </ul>
+                </Grid >
+
+            </nav >
+        </Container >
 
     )
 }

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@material-ui/core/styles'
 // import { teal, red } from '@material-ui/core/colors'
 
@@ -18,25 +18,26 @@ export const ThemeContext = createContext(defaultContext)
 export const ThemeContextProvider = ({ children }) => {
 
 
-    const [activeTheme, toggleTheme] = useState('dark')
-    const defaultTheme = createTheme({})
+    const [activeTheme, toggleTheme] = useState('light')
+    const [primary, setPrimary] = useState("#fbff2b")
 
+    const defaultTheme = createTheme({})
 
     const palette = {
         ...defaultTheme.palette,
-        // primary: { main: "#fbff2b" },
+        primary: { main: primary },
         // secondary: { main: red.A100 },
-        // background: {
-        //     default: activeTheme === 'light' ? '#fff' : '#212121',
-        //     paper: activeTheme === 'light' ? '#EDEBE9' : '#424242',
-        // },
-        // text: {
-        //     default: activeTheme === 'light' ? '#3B454E' : '#fff',
-        // },
+        background: {
+            default: activeTheme === 'light' ? '#fff' : '#212121',
+            paper: activeTheme === 'light' ? '#EDEBE9' : '#424242',
+        },
+        text: {
+            primary: activeTheme === 'light' ? '#3B454E' : '#fff',
+        },
         // type: activeTheme || 'light',
     }
 
-    const muiTheme = createTheme({
+    let muiTheme = createTheme({
         ...defaultTheme,
         palette,
         // props: {
@@ -84,12 +85,16 @@ export const ThemeContextProvider = ({ children }) => {
         //     ].join(','),
         // },
     })
+    console.log(`muiTheme`, muiTheme)
 
+    const handleSetPrimary = (color) => {
+        setPrimary(color)
+    }
 
 
     return (
 
-        <ThemeContext.Provider value={{ activeTheme, toggleTheme }}>
+        <ThemeContext.Provider value={{ activeTheme, toggleTheme, handleSetPrimary }}>
             <MuiThemeProvider theme={muiTheme}>
                 {children}
             </MuiThemeProvider>

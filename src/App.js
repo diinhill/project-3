@@ -24,6 +24,7 @@ import { BookContextProvider } from './context/bookContext'
 import { AuthContextProvider, AuthContext } from './context/authContext'
 import { UserListsContextProvider } from './context/userListsContext'
 import { ThemeContextProvider } from './context/themeContext'
+import Layout from './components/Layout'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -49,48 +50,50 @@ function App() {
       <ThemeContextProvider>
         <AuthContextProvider>
           <Router>
-            <Nav />
-            <BookContextProvider>
-              <UserListsContextProvider>
-                <Switch>
-                  <Route exact path='/'>
-                    <Homepage />
-                  </Route>
-                  <Route exact path='/authors'>
-                    <AuthorSearch />
-                  </Route>
-                  <Route exact path={`/authors/:authorKey`}>
-                    <AuthorCard />
-                  </Route>
-                  <Route exact path={`/authors/:authorKey/books/all`}>
-                    <AuthorBooksAll />
-                  </Route>
-                  <Route exact path='/books'>
-                    <BookSearch />
-                  </Route>
-                  <Route exact path={`/authors/:authorKey/books/:bookKey`}>
-                    <BookCard />
-                  </Route>
-                  <Route exact path='/lists/public'>
-                    <PublicLists />
-                  </Route>
-                  <Route exact path={`/lists/public/:publicListId`}>
-                    <PublicList />
-                  </Route>
-                  <Route exact path='/register'>
-                    <Register />
-                  </Route>
-                  <Route exact path='/login'>
-                    <Login />
-                  </Route>
-                  <Route exact path='/logout'>
-                    <Logout />
-                  </Route>
-                  <PrivateRoute component={UserLists} exact path='/lists' />
-                  <PrivateRoute component={UserList} exact path={`/lists/:listId`} />
-                </Switch>
-              </UserListsContextProvider>
-            </BookContextProvider>
+            {/* <Nav /> */}
+            <Layout>
+              <BookContextProvider>
+                <UserListsContextProvider>
+                  <Switch>
+                    <Route exact path='/'>
+                      <Homepage />
+                    </Route>
+                    <Route exact path='/authors'>
+                      <AuthorSearch />
+                    </Route>
+                    <Route exact path={`/authors/:authorKey`}>
+                      <AuthorCard />
+                    </Route>
+                    <Route exact path={`/authors/:authorKey/books/all`}>
+                      <AuthorBooksAll />
+                    </Route>
+                    <Route exact path='/books'>
+                      <BookSearch />
+                    </Route>
+                    <Route exact path={`/authors/:authorKey/books/:bookKey`}>
+                      <BookCard />
+                    </Route>
+                    <Route exact path='/lists/public'>
+                      <PublicLists />
+                    </Route>
+                    <Route exact path={`/lists/public/:publicListId`}>
+                      <PublicList />
+                    </Route>
+                    <Route exact path='/register'>
+                      <Register />
+                    </Route>
+                    <Route exact path='/login'>
+                      <Login />
+                    </Route>
+                    <Route exact path='/logout'>
+                      <Logout />
+                    </Route>
+                    <PrivateRoute component={UserLists} exact path='/lists' />
+                    <PrivateRoute component={UserList} exact path={`/lists/:listId`} />
+                  </Switch>
+                </UserListsContextProvider>
+              </BookContextProvider>
+            </Layout>
           </Router>
         </AuthContextProvider>
       </ThemeContextProvider>

@@ -3,17 +3,25 @@ import { BookContext } from '../context/bookContext'
 import { ThemeContext } from '../context/themeContext'
 import Carousel from 'react-material-ui-carousel'
 import CarouselItem from './CarouselItem'
-import { Typography } from '@material-ui/core'
+import { Typography, Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
 
 
-const flexContainer = { display: 'flex' }
+const useStyles = makeStyles({
+  field: {
+    display: 'blocks',
+    marginBottom: 20,
+    // marginTop: 20,
+  },
+})
 
 
 
 const Homepage = () => {
 
-  let { newScifi, getNewScifi, newHorror, getNewHorror } = useContext(BookContext)
-  const { activeTheme, toggleTheme } = useContext(ThemeContext)
+  const classes = useStyles()
+  const { newScifi, getNewScifi, newHorror, getNewHorror } = useContext(BookContext)
+  const { activeTheme } = useContext(ThemeContext)
 
   useEffect(() => {
     getNewScifi()
@@ -26,31 +34,26 @@ const Homepage = () => {
 
   return (
 
-    <div style={flexContainer}>
-      {/* <div style={{ justifyContent: 'center', marginBottom: '5px' }} > */}
+    <Container>
       {activeTheme === 'light' ?
         <div>
-          <Typography variant='h4' color='secondary' component='h3'>newest in sci-fi</Typography>
-          <Typography variant='h3' color='default' component='h6' align='center'>some haven't even been published yet</Typography>
-          <Carousel
-          // next={(next, active) => console.log(`we left ${active}, and are now at ${next}`)}
-          // prev={(prev, active) => console.log(`we left ${active}, and are now at ${prev}`)} 
-          >
-            {newScifi?.map((item, ii) =>
+          <Typography>newest in sci-fi</Typography>
+          <Typography>some haven't even been published yet</Typography>
+          <Carousel className={classes.field} indicators={false}>
+            {newScifi?.filter((item, i) => i > 0 && item?.author_key).map((item, ii) =>
               <CarouselItem item={item} key={ii} />)}
           </Carousel>
         </div>
         :
         <div>
           <Typography variant='h4' color='secondary' component='h3'>new in horror literature</Typography>
-          <Carousel>
-            {newHorror?.map((item, ii) =>
+          <Carousel className={classes.field} indicators={false}>
+            {newHorror?.filter((item, i) => i > 0 && item?.author_key).map((item, ii) =>
               <CarouselItem item={item} key={ii} />)}
           </Carousel>
         </div>
       }
-      {/* </div> */}
-    </div>
+    </Container>
 
   )
 

@@ -1,20 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/authContext'
 import { useHistory } from 'react-router-dom'
-import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { makeStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
 import { deepOrange } from '@material-ui/core/colors'
-import { Paper, TextField, Typography } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Paper, TextField, Button, Container } from '@material-ui/core'
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-
+        backgroundColor: deepOrange[500],
     },
     square: {
         color: theme.palette.getContrastText(deepOrange[500]),
@@ -27,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: 'Aliens',
         fontSize: '5rem',
         color: theme.palette.getContrastText(deepOrange[500])
+    },
+    field: {
+        display: 'blocks',
+        marginBottom: 20,
+        marginTop: 20,
     }
 }))
 
@@ -45,8 +47,9 @@ export const AvatarOptions = () => {
 
 const Register = () => {
 
+    const classes = useStyles()
     const history = useHistory()
-    const [state, setState] = useState({ email: "", password: "", name: "" })
+    const [state, setState] = useState({ email: '', password: '', name: '' })
     const { register, user } = useContext(AuthContext)
     const avatarOptions = AvatarOptions()
 
@@ -63,7 +66,6 @@ const Register = () => {
     }
 
 
-
     const handleChange = (e) => {
         setState({ ...state, [e.target.name]: e.target.value })
     }
@@ -73,7 +75,7 @@ const Register = () => {
     }
 
     useEffect(() => {
-        user && history.push("/login")
+        user && history.push('/login')
     }, [user, history])
 
     console.log('state:', state)
@@ -82,40 +84,39 @@ const Register = () => {
 
     return (
 
-        <form onSubmit={handleOnSubmit}>
-            <label>
-                <Typography>name</Typography>
-                <TextField type="text" name="name" onChange={handleChange} value={state.name} />
-            </label>
-            <label>
+        <Container /*className={classes.root}*/>
+            <form onSubmit={handleOnSubmit}>
+                <label>
+                    <TextField className={classes.field} fullWidth variant='outlined' required label='name' type='text' name='name' onChange={handleChange} value={state.name} />
+                </label>
+                <label>
+                    <div>
+                        <Button className={classes.field} fullWidth variant='outlined' required aria-label='more' aria-controls='long-menu' aria-haspopup='true' onClick={handleClick}>
+                            choose your avatar*
+                        </Button>
+
+                        <Menu id='long-menu' anchorEl={anchorEl} keepMounted open={open} onClose={handleClose}
+                            PaperProps={{ style: { maxHeight: ITEM_HEIGHT * 4.5 } }}
+                        >
+                            {avatarOptions.map((option, i) =>
+                                <MenuItem key={i} selected={option === 'P'} onClick={handleClose}>
+                                    <Paper variant='contained'>{option}</Paper>
+                                </ MenuItem>
+                            )}
+                        </Menu>
+                    </div>
+                </label>
+                <label>
+                    <TextField className={classes.field} fullWidth variant='outlined' required label='email' type='email' name='email' onChange={handleChange} value={state.email} />
+                </label>
+                <label>
+                    <TextField className={classes.field} fullWidth variant='outlined' required label='password' type='password' name='password' onChange={handleChange} value={state.password} />
+                </label>
                 <div>
-                    <Typography>avatar</Typography>
-                    <IconButton aria-label="more" aria-controls="long-menu" aria-haspopup="true" onClick={handleClick}>
-                        <MoreVertIcon />
-                    </IconButton>
-                    <Menu id="long-menu" anchorEl={anchorEl} keepMounted open={open} onClose={handleClose}
-                        PaperProps={{ style: { maxHeight: ITEM_HEIGHT * 4.5 } }}
-                    >
-                        {avatarOptions.map((option, i) =>
-                            <MenuItem key={i} selected={option === 'P'} onClick={handleClose}>
-                                <Paper>{option}</Paper>
-                            </ MenuItem>
-                        )}
-                    </Menu>
+                    <Button className={classes.field} variant='contained' type='submit'>submit</Button>
                 </div>
-            </label>
-            <label>
-                <Typography>email</Typography>
-                <TextField type="email" name="email" onChange={handleChange} value={state.email} />
-            </label>
-            <label>
-                <Typography>password</Typography>
-                <TextField type="password" name="password" onChange={handleChange} value={state.password} />
-            </label>
-            <div>
-                <Button variant='contained' type="submit">Submit</Button>
-            </div>
-        </form>
+            </form>
+        </Container>
     )
 }
 

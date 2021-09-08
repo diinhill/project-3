@@ -4,69 +4,77 @@ import { useParams } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Button, Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
 
-const flexContainer = { display: 'flex', flexDirection: 'column' }
+
+const useStyles = makeStyles({
+    field: {
+        display: 'blocks',
+        marginBottom: 20,
+        marginTop: 20,
+    }
+})
 
 
 
 const UserList = () => {
 
+    const classes = useStyles()
     const { listId } = useParams()
-    const { booksFromUserlist, getBooksFromUserlist, getPublicListId, deletePublicListId } = useContext(UserListsContext)
-    const [publicListId, setPublicListId] = useState('')
+    const { userList, getUserlist, setPublicList, deletePublicList } = useContext(UserListsContext)
 
 
     useEffect(() => {
-        getBooksFromUserlist(listId)
+        getUserlist(listId)
     }, [listId])
 
-    console.log('booksFromUserlist:', booksFromUserlist)
+    console.log('userlist:', userList)
 
-    const handleListSettings = async () => {
-        !publicListId ? setPublicListId(await getPublicListId(listId))
-            : setPublicListId(await deletePublicListId(publicListId, listId))
-        getBooksFromUserlist(listId)
+    const handleListSettings = () => {
+        userList.private ? setPublicList(listId) : deletePublicList(listId)
     }
 
 
 
     return (
 
-        <div style={flexContainer}>
+        <Container>
+            {userList ?
+                <>
+                    <Typography>{userList?.nameOfList}</Typography>
+                    {userList?.books ?
+                        userList.books.map((book, i) => {
+                            return (
+                                <div className={classes.field} key={i}>
+                                    <Link to={`/authors/${book?.author_key[0]}/books/${book?.cover_edition_key}`}>
+                                        <Paper>
+                                            <Typography>{book?.title}</Typography>
+                                            <Typography>{book?.author_name[0]}</Typography>
+                                            <Typography>{book?.first_publish_year}</Typography>
+                                            <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-S.jpg`} alt='' />
+                                        </Paper>
+                                    </Link>
+                                </div>
+                            )
+                        })
 
-            <Typography>{listId.nameOfList}</Typography>
+                        : <><Typography>you don't have any books in this list.</Typography>
+                            <Link to={'/books'}>
+                                <Button aria-label='find books to add to list'>add books</Button>
+                            </Link></>
+                    }
 
-            {booksFromUserlist ?
-                (booksFromUserlist.length !== 0) ?
-                    booksFromUserlist.map((book, i) => {
-                        return (
-                            <div key={i}>
-                                <Link to={`/authors/${book?.author_key[0]}/books/${book?.cover_edition_key}`}>
-                                    <Paper>
-                                        <Typography>{book?.title}</Typography>
-                                        <Typography>{book?.author_name}</Typography>
-                                        <Typography>{book?.first_publish_year}</Typography>
-                                        <img src={`https://covers.openlibrary.org/b/id/${book?.cover_i}-S.jpg`} alt='' />
-                                    </Paper>
-                                </Link>
-                            </div>
-                        )
-                    })
 
-                    : <><Typography>you don't have any books in this list.</Typography>
-                        <Link to={'/books'}>
-                            <Button aria-label='find books to add to list'>add books</Button>
-                        </Link></>
 
-                : <Typography>loading...</Typography>
+
+                    {userList.private ?
+                        <Button className={classes.field} variant='contained' aria-label='set list to public' onClick={handleListSettings}>set list to public</Button>
+                        : <Button className={classes.field} variant='contained' aria-label='set list to private' onClick={handleListSettings}>set list to private</Button>}
+                </> :
+                <Typography>loading...</Typography>
             }
-
-            {!publicListId ?
-                <Button aria-label='set list to public' onClick={() => handleListSettings()}>set list to public</Button>
-                : <Button aria-label='set list to private' onClick={() => handleListSettings()}>set list to private</Button>}
-
-        </div>
+        </Container>
     )
 }
 
