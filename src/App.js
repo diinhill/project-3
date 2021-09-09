@@ -26,7 +26,7 @@ import { UserListsContextProvider } from './context/userListsContext'
 import { ThemeContextProvider } from './context/themeContext'
 import Layout from './components/Layout'
 
-
+console.log(`process.env.REACT_APP_GOOGLE_API_KEY`, process.env.REACT_APP_GOOGLE_API_KEY)
 const PrivateRoute = ({ component: Component, ...rest }) => {
   console.log('rest:', rest)
   const { user } = useContext(AuthContext)
